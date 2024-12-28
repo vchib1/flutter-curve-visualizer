@@ -43,7 +43,8 @@ enum CurvesEnum {
   bounceInOut(Curves.bounceInOut),
   elasticIn(Curves.elasticIn),
   elasticOut(Curves.elasticOut),
-  elasticInOut(Curves.elasticInOut);
+  elasticInOut(Curves.elasticInOut),
+  custom(Cubic(0.77, 0.0, 0.175, 1.0));
 
   final Curve curve;
 
