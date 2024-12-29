@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   ScreenMode getLayoutType(double width) {
-    if (width < 500) {
+    if (width < 480) {
       return ScreenMode.mobile;
     } else if (width < 850) {
       return ScreenMode.tablet;
@@ -27,8 +27,9 @@ class MyApp extends StatelessWidget {
     final theme = MaterialTheme(Theme.of(context).textTheme);
 
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Curve Visualizer',
-      themeMode: ThemeMode.dark,
+      themeMode: ThemeMode.light,
       theme: theme.lightMediumContrast(),
       darkTheme: theme.dark(),
       home: LayoutBuilder(

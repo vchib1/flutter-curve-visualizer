@@ -51,4 +51,65 @@ enum CurvesEnum {
   const CurvesEnum(this.curve);
 
   static Curve get getFirst => CurvesEnum.values.first.curve;
+
+  static Map<String, List<CurvesEnum>> get list => {
+        'ease': easeCurves,
+        'bounces': bounceCurves,
+        'elastics': elasticCurves,
+        'others': otherCurves,
+      };
 }
+
+// Group curves into categories
+final easeCurves = [
+  CurvesEnum.ease,
+  CurvesEnum.easeIn,
+  CurvesEnum.easeInToLinear,
+  CurvesEnum.easeInSine,
+  CurvesEnum.easeInQuad,
+  CurvesEnum.easeInCubic,
+  CurvesEnum.easeInQuart,
+  CurvesEnum.easeInQuint,
+  CurvesEnum.easeInExpo,
+  CurvesEnum.easeInCirc,
+  CurvesEnum.easeInBack,
+  CurvesEnum.easeOut,
+  CurvesEnum.linearToEaseOut,
+  CurvesEnum.easeOutSine,
+  CurvesEnum.easeOutQuad,
+  CurvesEnum.easeOutCubic,
+  CurvesEnum.easeOutQuart,
+  CurvesEnum.easeOutQuint,
+  CurvesEnum.easeOutExpo,
+  CurvesEnum.easeOutCirc,
+  CurvesEnum.easeOutBack,
+  CurvesEnum.easeInOut,
+  CurvesEnum.easeInOutSine,
+  CurvesEnum.easeInOutQuad,
+  CurvesEnum.easeInOutCubic,
+  CurvesEnum.easeInOutCubicEmphasized,
+  CurvesEnum.easeInOutQuart,
+  CurvesEnum.easeInOutQuint,
+  CurvesEnum.easeInOutExpo,
+  CurvesEnum.easeInOutCirc,
+  CurvesEnum.easeInOutBack,
+];
+
+final bounceCurves = [
+  CurvesEnum.bounceIn,
+  CurvesEnum.bounceOut,
+  CurvesEnum.bounceInOut,
+];
+
+final elasticCurves = [
+  CurvesEnum.elasticIn,
+  CurvesEnum.elasticOut,
+  CurvesEnum.elasticInOut,
+];
+
+final otherCurves = [
+  CurvesEnum.linear,
+  CurvesEnum.decelerate,
+  CurvesEnum.slowMiddle,
+  //CurvesEnum.custom,
+];

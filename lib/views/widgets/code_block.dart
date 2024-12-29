@@ -24,8 +24,8 @@ class CodeBlock extends StatelessWidget {
     final mode = ScreenModeWidget.of(context);
 
     final codeStyle = switch (mode) {
-      ScreenMode.mobile => Theme.of(context).textTheme.bodySmall,
-      ScreenMode.tablet => Theme.of(context).textTheme.bodyMedium,
+      ScreenMode.mobile => Theme.of(context).textTheme.bodyMedium,
+      ScreenMode.tablet => Theme.of(context).textTheme.bodyLarge,
       ScreenMode.web => Theme.of(context).textTheme.bodyLarge,
     };
 
@@ -41,46 +41,46 @@ class CodeBlock extends StatelessWidget {
       Color(0xff2bc542),
     ];
 
-    final code =
-        "CurvedAnimation(\n\t\t\t\tparent: controller,\n\t\t\t\tcurve: Curves.${curve.name},\n);";
+    final code = "Curve.${curve.name}";
 
-    return IntrinsicWidth(
-      child: Container(
-        padding: EdgeInsets.all(padding),
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.onPrimaryFixed,
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          spacing: spacing,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Wrap(
-                  spacing: 5,
-                  children: List.from(lightsColors).map((color) {
-                    return CircleAvatar(radius: radius, backgroundColor: color);
-                  }).toList(),
-                ),
-                IconButton(
-                  onPressed: () => copyCode(context, code),
-                  iconSize: radius * 3,
-                  padding: EdgeInsets.zero,
-                  constraints: BoxConstraints(),
-                  color: Theme.of(context).colorScheme.onSurface,
-                  icon: Icon(Icons.copy),
-                )
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: FittedBox(child: Text(code, style: codeStyle)),
-            ),
-          ],
-        ),
+    return Container(
+      alignment: Alignment.center,
+      padding: EdgeInsets.all(padding),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.onPrimaryFixed,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        spacing: spacing,
+        children: [
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Wrap(
+                spacing: 5,
+                children: List.from(lightsColors).map((color) {
+                  return CircleAvatar(radius: radius, backgroundColor: color);
+                }).toList(),
+              ),
+              Spacer(),
+              IconButton(
+                onPressed: () => copyCode(context, code),
+                iconSize: radius * 3,
+                padding: EdgeInsets.zero,
+                constraints: BoxConstraints(),
+                color: Theme.of(context).colorScheme.onSurface,
+                icon: Icon(Icons.copy),
+              )
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(code, style: codeStyle),
+          ),
+        ],
       ),
     );
   }
