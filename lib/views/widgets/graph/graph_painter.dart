@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'graph_config.dart';
 
@@ -21,6 +23,7 @@ class GraphPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final points = generateCurveValues(animation, divisions);
+
     _drawAxis(canvas, size);
     _drawCurveBg(canvas, points, size);
     _drawCurve(canvas, points, size);
@@ -37,6 +40,7 @@ class GraphPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round
       ..isAntiAlias = true;
 
+    // Draw the circular marker
     canvas.drawCircle(Offset(xPos, yPos), config.pointerSize, markerPaint);
   }
 

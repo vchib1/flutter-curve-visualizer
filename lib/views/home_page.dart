@@ -116,6 +116,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    final screenMode = ScreenModeWidget.of(context);
+
     final decoration = BoxDecoration(
       color: Theme.of(context).colorScheme.onPrimaryFixed,
       borderRadius: BorderRadius.circular(10),
@@ -129,28 +131,33 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           controller: controller,
           animation: animation,
         ),
-        Wrap(
-          spacing: 8.0,
-          runSpacing: 8.0,
-          alignment: WrapAlignment.center,
-          children: AnimationType.values.map(
-            (animationType) {
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                spacing: 8.0,
-                children: [
-                  Text(animationType.name.capitalizeFirst()),
-                  SizedBox.square(
-                    dimension: 100,
-                    child: AnimatedBoxWidget(
-                      animationType: animationType,
-                      animation: animation,
+        SizedBox(
+          width: MediaQuery.of(context).size.width /
+              (screenMode.isMobileOrTablet ? 1 : 3),
+          child: Wrap(
+            spacing: 8.0,
+            runSpacing: 8.0,
+            runAlignment: WrapAlignment.center,
+            alignment: WrapAlignment.center,
+            children: AnimationType.values.map(
+              (animationType) {
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  spacing: 8.0,
+                  children: [
+                    Text(animationType.name.capitalizeFirst()),
+                    SizedBox.square(
+                      dimension: 100,
+                      child: AnimatedBoxWidget(
+                        animationType: animationType,
+                        animation: animation,
+                      ),
                     ),
-                  ),
-                ],
-              );
-            },
-          ).toList(),
+                  ],
+                );
+              },
+            ).toList(),
+          ),
         ),
       ],
     );
@@ -230,24 +237,21 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           ),
         ],
       ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.all(32.0),
-        child: FloatingActionButton(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: AnimatedIcon(
-                icon: AnimatedIcons.play_pause, progress: playPauseController),
-          ),
-          onPressed: () {
-            if (controller.isAnimating) {
-              controller.stop();
-              playPauseController.animateBack(0.0);
-            } else {
-              controller.repeat(reverse: true);
-              playPauseController.forward();
-            }
-          },
+      floatingActionButton: FloatingActionButton(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: AnimatedIcon(
+              icon: AnimatedIcons.play_pause, progress: playPauseController),
         ),
+        onPressed: () {
+          if (controller.isAnimating) {
+            controller.stop();
+            playPauseController.animateBack(0.0);
+          } else {
+            controller.repeat(reverse: true);
+            playPauseController.forward();
+          }
+        },
       ),
       body: SingleChildScrollView(
         child: Container(

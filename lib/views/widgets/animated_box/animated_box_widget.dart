@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 
-enum AnimationType { translate, rotate, scale, fade }
+enum AnimationType { translateX, translateY, rotate, scale, fade, flip }
 
 class AnimatedBoxWidget extends StatelessWidget {
   final AnimationType animationType;
@@ -44,11 +44,20 @@ class AnimatedBoxWidget extends StatelessWidget {
                   child: child,
                 ),
 
-              /// Translate
-              AnimationType.translate => Transform.translate(
+              /// Translate X
+              AnimationType.translateX => Transform.translate(
                   offset: Tween(
                     begin: Offset(0, (-constraints.maxHeight + boxSize) / 2),
                     end: Offset(0, (constraints.maxHeight - boxSize) / 2),
+                  ).transform(animation.value),
+                  child: child,
+                ),
+
+              /// Translate Y
+              AnimationType.translateY => Transform.translate(
+                  offset: Tween(
+                    begin: Offset((-constraints.maxWidth + boxSize) / 2, 0),
+                    end: Offset((constraints.maxHeight - boxSize) / 2, 0),
                   ).transform(animation.value),
                   child: child,
                 ),
@@ -57,6 +66,15 @@ class AnimatedBoxWidget extends StatelessWidget {
               AnimationType.fade => Opacity(
                   // accept values between 0 and 1
                   opacity: max(0, min(1, animation.value)),
+                  child: child,
+                ),
+
+              /// Flip
+              AnimationType.flip => Transform(
+                  alignment: FractionalOffset.center,
+                  transform: Matrix4.identity()
+                    ..setEntry(2, 1, 0.0015)
+                    ..rotateY(animation.value * pi),
                   child: child,
                 ),
             },

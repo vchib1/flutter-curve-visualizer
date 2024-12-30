@@ -15,7 +15,7 @@ class CodeBlock extends StatelessWidget {
     if (!context.mounted) return;
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Code copied to clipboard')),
+      const SnackBar(content: Text('Copied to clipboard')),
     );
   }
 
@@ -28,8 +28,6 @@ class CodeBlock extends StatelessWidget {
       ScreenMode.tablet => Theme.of(context).textTheme.bodyLarge,
       ScreenMode.web => Theme.of(context).textTheme.bodyLarge,
     };
-
-    final double padding = mode.isMobile ? 8 : 16;
 
     final double spacing = mode.isMobile ? 5 : 10;
 
@@ -45,7 +43,7 @@ class CodeBlock extends StatelessWidget {
 
     return Container(
       alignment: Alignment.center,
-      padding: EdgeInsets.all(padding),
+      padding: EdgeInsets.all(8.0),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.onPrimaryFixed,
         borderRadius: BorderRadius.circular(10),
@@ -68,8 +66,8 @@ class CodeBlock extends StatelessWidget {
               Spacer(),
               IconButton(
                 onPressed: () => copyCode(context, code),
-                iconSize: radius * 3,
                 padding: EdgeInsets.zero,
+                iconSize: 16,
                 constraints: BoxConstraints(),
                 color: Theme.of(context).colorScheme.onSurface,
                 icon: Icon(Icons.copy),
