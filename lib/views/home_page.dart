@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_curve_visualizer/screen_mode.dart';
 import 'package:flutter_curve_visualizer/utils/curves_enum.dart';
 import 'package:flutter_curve_visualizer/utils/extension/string.dart';
+import 'package:flutter_curve_visualizer/utils/theme/theme_provider.dart';
 import 'package:flutter_curve_visualizer/views/widgets/animated_box/animated_box_widget.dart';
 import 'package:flutter_curve_visualizer/views/widgets/dropdown_menu.dart';
 import 'package:flutter_curve_visualizer/views/widgets/graph/graph_widget.dart';
+import 'package:provider/provider.dart';
 
 import 'widgets/code_block.dart';
 
@@ -192,7 +194,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               children: [
                 Text(
                   "Time: ${animationTime}s",
-                  style: Theme.of(context).textTheme.bodyMedium,
+                  style: Theme.of(context).textTheme.titleSmall,
                 ),
                 Slider(
                   value: animationTime.toDouble(),
@@ -210,19 +212,42 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Flutter Curve Visualizer'),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 12.0),
+            child: Consumer<ThemeProvider>(
+              builder: (context, value, child) {
+                final iconData = value.getThemeMode() == ThemeMode.dark
+                    ? Icons.light_mode
+                    : Icons.dark_mode;
+
+                return IconButton(
+                  onPressed: () => value.toggleTheme(),
+                  icon: Icon(iconData),
+                );
+              },
+            ),
+          ),
+        ],
       ),
-      floatingActionButton: FloatingActionButton(
-        child: AnimatedIcon(
-            icon: AnimatedIcons.play_pause, progress: playPauseController),
-        onPressed: () {
-          if (controller.isAnimating) {
-            controller.stop();
-            playPauseController.animateBack(0.0);
-          } else {
-            controller.repeat(reverse: true);
-            playPauseController.forward();
-          }
-        },
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.all(32.0),
+        child: FloatingActionButton(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: AnimatedIcon(
+                icon: AnimatedIcons.play_pause, progress: playPauseController),
+          ),
+          onPressed: () {
+            if (controller.isAnimating) {
+              controller.stop();
+              playPauseController.animateBack(0.0);
+            } else {
+              controller.repeat(reverse: true);
+              playPauseController.forward();
+            }
+          },
+        ),
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -251,11 +276,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 children: [
                   Expanded(
                     flex: 1,
-                    child: animationWidget,
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: animationWidget,
+                    ),
                   ),
                   Flexible(
                     flex: 1,
-                    child: Center(child: controlsWidget),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: controlsWidget,
+                    ),
                   ),
                 ],
               ),

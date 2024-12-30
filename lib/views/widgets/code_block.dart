@@ -33,7 +33,7 @@ class CodeBlock extends StatelessWidget {
 
     final double spacing = mode.isMobile ? 5 : 10;
 
-    final double radius = mode.isMobile ? 5 : 7.5;
+    final double radius = mode.isMobile ? 3 : 5;
 
     final lightsColors = <Color>[
       Color(0xffff5d5e),

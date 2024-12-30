@@ -341,11 +341,16 @@ class MaterialTheme {
         useMaterial3: true,
         brightness: colorScheme.brightness,
         colorScheme: colorScheme,
+        snackBarTheme: SnackBarThemeData(
+          behavior: SnackBarBehavior.floating,
+          showCloseIcon: true,
+        ),
         textTheme: textTheme.apply(
+          fontFamily: "Outfit",
           bodyColor: colorScheme.onSurface,
           displayColor: colorScheme.onSurface,
         ),
-        scaffoldBackgroundColor: colorScheme.background,
+        scaffoldBackgroundColor: colorScheme.surface,
         canvasColor: colorScheme.surface,
       );
 

@@ -1,12 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_curve_visualizer/screen_mode.dart';
 import 'package:flutter_curve_visualizer/utils/theme/theme.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'utils/theme/theme_provider.dart';
 import 'views/home_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  runApp(const MyApp());
+  final pref = await SharedPreferences.getInstance();
+
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => ThemeProvider(pref: pref),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -26,20 +36,22 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = MaterialTheme(Theme.of(context).textTheme);
 
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Curve Visualizer',
-      themeMode: ThemeMode.light,
-      theme: theme.lightMediumContrast(),
-      darkTheme: theme.dark(),
-      home: LayoutBuilder(
-        builder: (context, constraints) {
-          return ScreenModeWidget(
-            mode: getLayoutType(constraints.maxWidth),
-            child: const HomePage(),
-          );
-        },
-      ),
-    );
+    return Consumer<ThemeProvider>(builder: (context, themeProvider, child) {
+      return MaterialApp(
+        title: 'Flutter Curve Visualizer',
+        debugShowCheckedModeBanner: false,
+        themeMode: themeProvider.getThemeMode(),
+        theme: theme.lightMediumContrast(),
+        darkTheme: theme.dark(),
+        home: LayoutBuilder(
+          builder: (context, constraints) {
+            return ScreenModeWidget(
+              mode: getLayoutType(constraints.maxWidth),
+              child: const HomePage(),
+            );
+          },
+        ),
+      );
+    });
   }
 }

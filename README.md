@@ -1,16 +1,32 @@
-# flutter_curve_visualizer
+# Flutter Curve Visualizer
 
-A new Flutter project.
+A web app built with Flutter to visualize animation curves interactively. This tool helps developers
+understand and experiment with different Flutter animation curves in a graphical interface.
 
-## Getting Started
+## Features
 
-This project is a starting point for a Flutter application.
+- Graphical visualization of animation curves on a graph.
+- Interactive controls to select curve category, curve type, and animation duration.
+- Play/Pause animation functionality using a Floating Action Button (FAB).
+- Preview boxes demonstrating Translate, Scale, Rotate, and Opacity effects.
+- Responsive design for seamless use across devices (desktop, tablet, and mobile).
 
-A few resources to get you started if this is your first Flutter project:
+This app is ideal for exploring and learning how different animation curves work in Flutter
+applications.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Roadmap
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- Add more controls.
+
+- Add Interactive Graph to visualize custom curve.
+
+- Add Switch to toggle theme mode in header.
+
+## Demo
+
+https://vchib1.github.io/flutter-curve-visualizer/
+
+## Authors
+
+- [@vchib1](https://www.github.com/vchib1)
+

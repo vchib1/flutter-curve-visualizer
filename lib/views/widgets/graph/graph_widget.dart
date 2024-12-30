@@ -29,7 +29,7 @@ class GraphWidget extends StatelessWidget {
 
     final screenSize = MediaQuery.sizeOf(context);
 
-    final size = Size(350, screenSize.height / 3);
+    final size = Size(350, screenSize.height / 4);
 
     return SizedBox(
       width: screenSize.width * widthToTake,
@@ -42,11 +42,11 @@ class GraphWidget extends StatelessWidget {
             animation: animation,
             config: GraphConfiguration(
               xAxisLineCount: 10,
-              yAxisLineCount: 5,
-              axisWidth: 0.125,
+              yAxisLineCount: 6,
+              axisWidth: 1,
               curveLineWidth: 2.5,
               pointerSize: 5,
-              axisColor: theme.onSurface,
+              axisColor: theme.onSurface.withValues(alpha: 0.25),
               showCurveOutline: showCurveOutline,
               curveOutlineColor: theme.onSurfaceVariant.withValues(alpha: 0.25),
               curveLineColor: theme.primaryFixed,

@@ -21,7 +21,7 @@ class DropdownMenuWidget<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     final titleStyle = Theme.of(context).textTheme.titleSmall;
 
-    final childTextStyle = Theme.of(context).textTheme.bodyMedium;
+    final childTextStyle = Theme.of(context).textTheme.titleMedium;
 
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
