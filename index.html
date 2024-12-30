@@ -1,19 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!--
-      If you are serving your web app in a path other than the root, change the
-      href value below to reflect the base path you are serving from.
-
-      The path provided below has to start and end with a slash "/" in order for
-      it to work correctly.
-
-      For more details:
-      * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
-
-      This is a placeholder for base href that will be replaced by the value of
-      the `--base-href` argument provided to `flutter build`.
-    -->
     <base href="/flutter-curve-visualizer/">
 
     <meta charset="UTF-8">
@@ -31,8 +18,70 @@
 
     <title>Flutter Curve Visualizer</title>
     <link rel="manifest" href="manifest.json">
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        #loading-container{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .colorful {
+           width: 44.8px;
+           height: 44.8px;
+           border-radius: 50%;
+           background: radial-gradient(farthest-side,#3bff81 94%,#0000),
+                  radial-gradient(farthest-side,#ffd82e 94%,#0000),
+                  radial-gradient(farthest-side,#ff6761 94%,#0000),
+                  radial-gradient(farthest-side,#474bff 94%,#0000),
+                  #3bff81;
+           background-size: 105% 105%;
+           background-repeat: no-repeat;
+           animation: colorful-7utelwmd 2s infinite;
+        }
+
+        @keyframes colorful-7utelwmd {
+           0% {
+              background-position: 50% -56px,-44.8px 50%, 50% calc(100% + 56px),calc(100% + 56px) 50%;
+           }
+
+           20%, 25% {
+              background-position: 50% -56px,-56px 50%, 50% calc(100% + 56px),50% 50%;
+           }
+
+           45%, 50% {
+              background-position: 50% -56px,-56px 50%, 50% 50% ,50% 50%;
+           }
+
+           75%, 75% {
+              background-position: 50% -56px, 50%  50%, 50% 50%,50% 50%;
+           }
+
+           95%, 100% {
+              background-position: 50%  50% , 50%  50%, 50% 50%,50% 50%;
+           }
+        }
+    </style>
 </head>
 <body>
+<div id="loading-container">
+    <div class="colorful"></div>
+</div>
+<script>
+    const darkThemeMode = localStorage.getItem('flutter.darkMode') || false;
+
+    if (darkThemeMode === 'true') {
+        document.getElementById("loading-container").style.backgroundColor = '#18120c';
+    } else {
+        document.getElementById("loading-container").style.backgroundColor = '#fff8f4';
+    }
+</script>
 <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>
