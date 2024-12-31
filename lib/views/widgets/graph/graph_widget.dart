@@ -10,7 +10,7 @@ class GraphWidget extends StatelessWidget {
 
   const GraphWidget({
     super.key,
-    this.showCurveOutline = false,
+    this.showCurveOutline = true,
     required this.animation,
     required this.controller,
   });

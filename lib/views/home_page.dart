@@ -2,14 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_curve_visualizer/screen_mode.dart';
 import 'package:flutter_curve_visualizer/utils/curves_enum.dart';
 import 'package:flutter_curve_visualizer/utils/extension/string.dart';
-import 'package:flutter_curve_visualizer/utils/theme/theme_provider.dart';
 import 'package:flutter_curve_visualizer/views/widgets/animated_box/animated_box_widget.dart';
+import 'package:flutter_curve_visualizer/views/widgets/appbar.dart';
 import 'package:flutter_curve_visualizer/views/widgets/dropdown_menu.dart';
 import 'package:flutter_curve_visualizer/views/widgets/graph/graph_widget.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
-
 import 'widgets/code_block.dart';
 
 class HomePage extends StatefulWidget {
@@ -20,19 +16,14 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
+  late AnimationController playPauseController;
   late AnimationController controller;
-
-  late CurvedAnimation animation;
+  late CurvedAnimation curveAnimation;
 
   late String selectedCategory;
-
   late CurvesEnum selectedCurve;
 
   late int animationTime;
-
-  late AnimationController playPauseController;
-
-  bool showCurveOutline = true;
 
   @override
   void initState() {
@@ -45,44 +36,33 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     playPauseController = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 250),
-    );
+    )..forward();
 
     controller = AnimationController(
       vsync: this,
       duration: Duration(seconds: animationTime),
-    );
+    )..repeat(reverse: true);
 
-    animation = CurvedAnimation(
+    curveAnimation = CurvedAnimation(
       parent: controller,
       curve: selectedCurve.curve,
     );
-
-    controller.repeat(reverse: true);
-
-    controller.addListener(playPauseListener);
-  }
-
-  void playPauseListener() {
-    if (controller.isAnimating) {
-      playPauseController.forward();
-    } else {
-      playPauseController.reset();
-    }
   }
 
   @override
   void dispose() {
-    controller.removeListener(playPauseListener);
     playPauseController.dispose();
     controller.dispose();
     super.dispose();
   }
 
   void updateCategory(String? category) {
+    if (category == null) return;
+
     setState(() {
-      selectedCategory = category!;
+      selectedCategory = category;
       selectedCurve = CurvesEnum.list[category]!.first;
-      animation = CurvedAnimation(
+      curveAnimation = CurvedAnimation(
         parent: controller,
         curve: selectedCurve.curve,
       );
@@ -92,55 +72,66 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   void updateCurve(CurvesEnum curve) {
     setState(() {
       selectedCurve = curve;
-
-      animation = CurvedAnimation(
-        parent: controller,
-        curve: selectedCurve.curve,
-      );
+      curveAnimation.curve = curve.curve;
     });
   }
 
   void updateAnimationTime(double seconds) {
-    animationTime = seconds.toInt();
-    controller = AnimationController(
-      vsync: this,
-      duration: Duration(seconds: animationTime),
-    );
-    setState(() {});
+    // return if both values are same
+    if (animationTime == seconds.toInt()) return;
 
-    animation = CurvedAnimation(
-      parent: controller,
-      curve: selectedCurve.curve,
-    );
-    controller.repeat(reverse: true);
-    playPauseController.forward();
+    setState(() {
+      animationTime = seconds.toInt();
+
+      controller.duration = Duration(seconds: animationTime);
+
+      curveAnimation.curve = selectedCurve.curve;
+
+      if (controller.isForwardOrCompleted) {
+        controller.repeat(reverse: true);
+      } else {
+        controller.reverse().then((value) => controller.repeat(reverse: true));
+      }
+
+      playPauseController.forward();
+    });
+  }
+
+  void playPauseAnimation() {
+    if (controller.isAnimating) {
+      controller.stop();
+      playPauseController.animateBack(0.0);
+    } else {
+      controller.repeat(reverse: true);
+      playPauseController.forward();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final screenMode = ScreenModeWidget.of(context);
 
-    final theme = Theme.of(context);
-
-    final decoration = BoxDecoration(
-      color: Theme.of(context).colorScheme.onPrimaryFixed,
-      borderRadius: BorderRadius.circular(10),
-    );
+    final double spacing = switch (screenMode) {
+      ScreenMode.mobile => 20,
+      ScreenMode.tablet => 30,
+      ScreenMode.web => 30,
+    };
 
     final animationWidget = Column(
       children: [
         // Graph
         GraphWidget(
-          showCurveOutline: showCurveOutline,
           controller: controller,
-          animation: animation,
+          animation: curveAnimation,
         ),
+
+        // Box Animations
         SizedBox(
           width: MediaQuery.of(context).size.width /
               (screenMode.isMobileOrTablet ? 1 : 3),
           child: Wrap(
-            spacing: 8.0,
-            runSpacing: 8.0,
+            spacing: spacing / 2,
+            runSpacing: spacing / 2,
             runAlignment: WrapAlignment.center,
             alignment: WrapAlignment.center,
             children: AnimationType.values.map(
@@ -154,7 +145,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       dimension: 100,
                       child: AnimatedBoxWidget(
                         animationType: animationType,
-                        animation: animation,
+                        animation: curveAnimation,
                       ),
                     ),
                   ],
@@ -172,14 +163,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        spacing: 20,
+        spacing: spacing,
         children: [
           // Code block
           CodeBlock(curve: selectedCurve),
 
           // Curve category
           DropdownMenuWidget<String>(
-            title: "Curve Category",
+            title: "Category",
             value: selectedCategory,
             items: CurvesEnum.list.keys.toList(),
             onChanged: updateCategory,
@@ -187,7 +178,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
           // Curve type
           DropdownMenuWidget<CurvesEnum>(
-            title: "Curve Type",
+            title: "Type",
             value: selectedCurve,
             items: CurvesEnum.list[selectedCategory]!..toList(),
             onChanged: (value) => updateCurve(value!),
@@ -199,7 +190,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           // Curve type
           Container(
             padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-            decoration: decoration,
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.onPrimaryFixed,
+              borderRadius: BorderRadius.circular(10),
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -221,59 +215,16 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Flutter Curve Visualizer'),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 12.0),
-            child: IconButton(
-              onPressed: () {
-                launchUrl(Uri.parse(
-                    "https://github.com/vchib1/flutter-curve-visualizer"));
-              },
-              icon: SvgPicture.asset(
-                "assets/svg/github.svg",
-                width: theme.iconTheme.size ?? 24,
-                height: theme.iconTheme.size ?? 24,
-                colorFilter: ColorFilter.mode(
-                  theme.iconTheme.color ?? Colors.black,
-                  BlendMode.srcIn,
-                ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(right: 12.0),
-            child: Consumer<ThemeProvider>(
-              builder: (context, value, child) {
-                final iconData = value.getThemeMode() == ThemeMode.dark
-                    ? Icons.light_mode
-                    : Icons.dark_mode;
-
-                return IconButton(
-                  onPressed: () => value.toggleTheme(),
-                  icon: Icon(iconData),
-                );
-              },
-            ),
-          ),
-        ],
-      ),
+      appBar: HomeAppBar(),
       floatingActionButton: FloatingActionButton(
+        onPressed: playPauseAnimation,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: AnimatedIcon(
-              icon: AnimatedIcons.play_pause, progress: playPauseController),
+            icon: AnimatedIcons.play_pause,
+            progress: playPauseController,
+          ),
         ),
-        onPressed: () {
-          if (controller.isAnimating) {
-            controller.stop();
-            playPauseController.animateBack(0.0);
-          } else {
-            controller.repeat(reverse: true);
-            playPauseController.forward();
-          }
-        },
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -282,7 +233,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: switch (ScreenModeWidget.of(context)) {
             ScreenMode.mobile => Column(
-                spacing: 10,
+                spacing: spacing,
                 children: [
                   animationWidget,
                   controlsWidget,
@@ -290,7 +241,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 ],
               ),
             ScreenMode.tablet => Column(
-                spacing: 20,
+                spacing: spacing,
                 children: [
                   animationWidget,
                   controlsWidget,
@@ -298,7 +249,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 ],
               ),
             ScreenMode.web => Row(
-                spacing: 10,
+                spacing: spacing,
                 children: [
                   Expanded(
                     flex: 1,

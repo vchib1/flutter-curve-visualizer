@@ -36,22 +36,24 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = MaterialTheme(Theme.of(context).textTheme);
 
-    return Consumer<ThemeProvider>(builder: (context, themeProvider, child) {
-      return MaterialApp(
-        title: 'Flutter Curve Visualizer',
-        debugShowCheckedModeBanner: false,
-        themeMode: themeProvider.getThemeMode(),
-        theme: theme.lightMediumContrast(),
-        darkTheme: theme.dark(),
-        home: LayoutBuilder(
-          builder: (context, constraints) {
-            return ScreenModeWidget(
-              mode: getLayoutType(constraints.maxWidth),
-              child: const HomePage(),
-            );
-          },
-        ),
-      );
-    });
+    return Consumer<ThemeProvider>(
+      builder: (context, themeProvider, child) {
+        return MaterialApp(
+          title: 'Flutter Curve Visualizer',
+          debugShowCheckedModeBanner: false,
+          themeMode: themeProvider.getThemeMode(),
+          theme: theme.lightMediumContrast(),
+          darkTheme: theme.dark(),
+          home: LayoutBuilder(
+            builder: (context, constraints) {
+              return ScreenModeWidget(
+                mode: getLayoutType(constraints.maxWidth),
+                child: const HomePage(),
+              );
+            },
+          ),
+        );
+      },
+    );
   }
 }
