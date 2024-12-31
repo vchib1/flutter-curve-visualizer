@@ -44,11 +44,11 @@ class AnimatedBoxWidget extends StatelessWidget {
                   child: child,
                 ),
 
-              /// Translate X
+              /// Translate x
               AnimationType.translateX => Transform.translate(
                   offset: Tween(
-                    begin: Offset(0, (-constraints.maxHeight + boxSize) / 2),
-                    end: Offset(0, (constraints.maxHeight - boxSize) / 2),
+                    begin: Offset((-constraints.maxWidth + boxSize) / 2, 0),
+                    end: Offset((constraints.maxHeight - boxSize) / 2, 0),
                   ).transform(animation.value),
                   child: child,
                 ),
@@ -56,8 +56,8 @@ class AnimatedBoxWidget extends StatelessWidget {
               /// Translate Y
               AnimationType.translateY => Transform.translate(
                   offset: Tween(
-                    begin: Offset((-constraints.maxWidth + boxSize) / 2, 0),
-                    end: Offset((constraints.maxHeight - boxSize) / 2, 0),
+                    begin: Offset(0, (-constraints.maxHeight + boxSize) / 2),
+                    end: Offset(0, (constraints.maxHeight - boxSize) / 2),
                   ).transform(animation.value),
                   child: child,
                 ),

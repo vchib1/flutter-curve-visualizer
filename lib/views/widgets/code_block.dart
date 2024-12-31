@@ -42,7 +42,6 @@ class CodeBlock extends StatelessWidget {
     final code = "Curve.${curve.name}";
 
     return Container(
-      alignment: Alignment.center,
       padding: EdgeInsets.all(8.0),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.onPrimaryFixed,
@@ -53,26 +52,29 @@ class CodeBlock extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         spacing: spacing,
         children: [
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Wrap(
-                spacing: 5,
-                children: List.from(lightsColors).map((color) {
-                  return CircleAvatar(radius: radius, backgroundColor: color);
-                }).toList(),
-              ),
-              Spacer(),
-              IconButton(
-                onPressed: () => copyCode(context, code),
-                padding: EdgeInsets.zero,
-                iconSize: 16,
-                constraints: BoxConstraints(),
-                color: Theme.of(context).colorScheme.onSurface,
-                icon: Icon(Icons.copy),
-              )
-            ],
+          Align(
+            alignment: Alignment.topCenter,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Wrap(
+                  spacing: 5,
+                  children: List.from(lightsColors).map((color) {
+                    return CircleAvatar(radius: radius, backgroundColor: color);
+                  }).toList(),
+                ),
+                Spacer(),
+                GestureDetector(
+                  onTap: () => copyCode(context, code),
+                  child: Icon(
+                    Icons.copy,
+                    color: Theme.of(context).colorScheme.onSurface,
+                    size: 16,
+                  ),
+                )
+              ],
+            ),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
