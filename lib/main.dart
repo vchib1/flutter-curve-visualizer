@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_curve_visualizer/screen_mode.dart';
+import 'package:flutter_curve_visualizer/views/widgets/screen_mode.dart';
 import 'package:flutter_curve_visualizer/utils/theme/theme.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';

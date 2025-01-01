@@ -30,6 +30,7 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
+            transition: opacity 4s ease-out;
         }
 
         .colorful {
@@ -43,10 +44,10 @@
                   #3bff81;
            background-size: 105% 105%;
            background-repeat: no-repeat;
-           animation: colorful-7utelwmd 2s infinite;
+           animation: colorful-animation 2s infinite;
         }
 
-        @keyframes colorful-7utelwmd {
+        @keyframes colorful-animation {
            0% {
               background-position: 50% -56px,-44.8px 50%, 50% calc(100% + 56px),calc(100% + 56px) 50%;
            }
@@ -74,6 +75,9 @@
     <div class="colorful"></div>
 </div>
 <script>
+    {{flutter_js}}
+    {{flutter_bootstrap_js}}
+
     const darkThemeMode = localStorage.getItem('flutter.darkMode') || false;
 
     if (darkThemeMode === 'true') {
@@ -82,6 +86,5 @@
         document.getElementById("loading-container").style.backgroundColor = '#fff8f4';
     }
 </script>
-<script src="flutter_bootstrap.js" async></script>
 </body>
 </html>

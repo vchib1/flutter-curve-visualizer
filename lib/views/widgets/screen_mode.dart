@@ -12,7 +12,8 @@ enum ScreenMode {
   bool get isWeb => this == ScreenMode.web;
 
   bool get isMobileOrTablet =>
-      this == ScreenMode.mobile || this == ScreenMode.tablet;}
+      this == ScreenMode.mobile || this == ScreenMode.tablet;
+}
 
 class ScreenModeWidget extends InheritedWidget {
   final ScreenMode mode;
@@ -21,7 +22,7 @@ class ScreenModeWidget extends InheritedWidget {
 
   static ScreenMode of(BuildContext context) {
     final responsiveLayout =
-    context.dependOnInheritedWidgetOfExactType<ScreenModeWidget>();
+        context.dependOnInheritedWidgetOfExactType<ScreenModeWidget>();
 
     if (responsiveLayout == null) {
       throw FlutterError('ResponsiveLayout not found in widget tree!');

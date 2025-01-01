@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_curve_visualizer/screen_mode.dart';
+import 'package:flutter_curve_visualizer/views/widgets/screen_mode.dart';
 import 'package:flutter_curve_visualizer/utils/curves_enum.dart';
 
 class CodeBlock extends StatelessWidget {

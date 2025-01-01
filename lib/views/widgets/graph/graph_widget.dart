@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_curve_visualizer/views/widgets/graph/graph_config.dart';
-import 'package:flutter_curve_visualizer/screen_mode.dart';
+import 'package:flutter_curve_visualizer/views/widgets/screen_mode.dart';
 import 'graph_painter.dart';
 
 class GraphWidget extends StatelessWidget {

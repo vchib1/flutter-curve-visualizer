@@ -29,7 +29,7 @@ jobs:
         run: flutter pub get
 
       - name: Creating a build
-        run: flutter build web --release --base-href "/flutter-curve-visualizer/"
+        run: flutter build web --wasm --release --base-href "/flutter-curve-visualizer/"
 
       - name: Deploying to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
