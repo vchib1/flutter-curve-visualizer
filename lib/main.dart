@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_curve_visualizer/views/widgets/screen_mode.dart';
 import 'package:flutter_curve_visualizer/utils/theme/theme.dart';
 import 'package:provider/provider.dart';
@@ -52,7 +53,7 @@ class MyApp extends StatelessWidget {
               );
             },
           ),
-        );
+        ).animate().fadeIn();
       },
     );
   }

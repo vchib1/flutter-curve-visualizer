@@ -1,6 +1,14 @@
 BASE_HREF = '/'
 GITHUB_REPO := https://github.com/vchib1/vchib1.github.io.git
 
+build:
+	@echo "Cleaning up..."
+	flutter clean
+	@echo "Getting Packages..."
+	flutter pub get
+	@echo "Building Web..."
+	flutter build web --wasm
+
 deploy:
 	@echo "Cleaning up..."
 	flutter clean

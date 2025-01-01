@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'graph_config.dart';
 
 class GraphPainter extends CustomPainter {
-  GraphPainter({
+  const GraphPainter({
     required this.controller,
     required this.animation,
     required this.config,
@@ -38,7 +38,6 @@ class GraphPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round
       ..isAntiAlias = true;
 
-    // Draw the circular marker
     canvas.drawCircle(Offset(xPos, yPos), config.pointerSize, markerPaint);
   }
 

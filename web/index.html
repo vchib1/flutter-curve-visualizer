@@ -30,10 +30,10 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            transition: opacity 4s ease-out;
         }
 
         .colorful {
+           transition: opacity .4s ease-out;
            width: 44.8px;
            height: 44.8px;
            border-radius: 50%;
@@ -75,16 +75,37 @@
     <div class="colorful"></div>
 </div>
 <script>
-    {{flutter_js}}
-    {{flutter_bootstrap_js}}
-
+    function delay(time) {
+            return new Promise(resolve => setTimeout(resolve, time));
+     }
     const darkThemeMode = localStorage.getItem('flutter.darkMode') || false;
 
     if (darkThemeMode === 'true') {
-        document.getElementById("loading-container").style.backgroundColor = '#18120c';
+        document.body.style.backgroundColor = '#18120c';
     } else {
-        document.getElementById("loading-container").style.backgroundColor = '#fff8f4';
+        document.body.style.backgroundColor = '#fff8f4';
     }
+
+     window.addEventListener('load', function(ev) {
+       {{flutter_js}}
+       {{flutter_build_config}}
+
+       const loading = document.querySelector(".colorful");
+
+       _flutter.loader.load({
+         serviceWorker: {
+           serviceWorkerVersion: {{flutter_service_worker_version}},
+         },
+         onEntrypointLoaded: async function(engineInitializer) {
+           engineInitializer.initializeEngine().then(async function(appRunner) {
+             loading.style.opacity = "0";
+             await delay(400);
+             loading.remove();
+             await appRunner.runApp();
+           });
+         }
+       });
+     });
 </script>
 </body>
 </html>

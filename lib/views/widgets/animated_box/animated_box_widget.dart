@@ -32,49 +32,25 @@ class AnimatedBoxWidget extends StatelessWidget {
             child: Align(
               alignment: Alignment.center,
               child: switch (animationType) {
-                /// Rotate
-                AnimationType.rotate =>
-                  Transform.rotate(angle: animation.value * pi, child: child),
-
-                /// Scale
-                AnimationType.scale => Transform.scale(
-                    scale: animation.value,
-                    child: child,
-                  ),
-
                 /// Translate x
-                AnimationType.translateX => Transform.translate(
-                    offset: Tween(
-                      begin: Offset((-constraints.maxWidth + boxSize) / 2, 0),
-                      end: Offset((constraints.maxHeight - boxSize) / 2, 0),
-                    ).transform(animation.value),
-                    child: child,
-                  ),
+                AnimationType.translateX =>
+                  _buildTransformX(constraints, boxSize, child),
 
                 /// Translate Y
-                AnimationType.translateY => Transform.translate(
-                    offset: Tween(
-                      begin: Offset(0, (-constraints.maxHeight + boxSize) / 2),
-                      end: Offset(0, (constraints.maxHeight - boxSize) / 2),
-                    ).transform(animation.value),
-                    child: child,
-                  ),
+                AnimationType.translateY =>
+                  _buildTransformY(constraints, boxSize, child),
+
+                /// Rotate
+                AnimationType.rotate => _buildRotate(child),
+
+                /// Scale
+                AnimationType.scale => _buildScale(child),
 
                 /// Fade
-                AnimationType.fade => AnimatedOpacity(
-                    duration: const Duration(milliseconds: 100),
-                    opacity: animation.value.clamp(0.0, 1.0),
-                    child: child,
-                  ),
+                AnimationType.fade => _buildFade(child),
 
                 /// Flip
-                AnimationType.flip => Transform(
-                    alignment: FractionalOffset.center,
-                    transform: Matrix4.identity()
-                      ..setEntry(2, 1, 0.0002)
-                      ..rotateY(animation.value * pi),
-                    child: child,
-                  ),
+                AnimationType.flip => _buildFlip(child),
               },
             ),
           );
@@ -82,4 +58,54 @@ class AnimatedBoxWidget extends StatelessWidget {
       );
     });
   }
+
+  Transform _buildFlip(Widget? child) {
+    return Transform(
+      alignment: FractionalOffset.center,
+      transform: Matrix4.identity()
+        ..setEntry(2, 1, 0.0002)
+        ..rotateY(animation.value * pi),
+      child: child,
+    );
+  }
+
+  AnimatedOpacity _buildFade(Widget? child) {
+    return AnimatedOpacity(
+      duration: const Duration(milliseconds: 100),
+      opacity: animation.value.clamp(0.0, 1.0),
+      child: child,
+    );
+  }
+
+  Transform _buildTransformY(
+      BoxConstraints constraints, double boxSize, Widget? child) {
+    return Transform.translate(
+      offset: Tween(
+        begin: Offset(0, (-constraints.maxHeight + boxSize) / 2),
+        end: Offset(0, (constraints.maxHeight - boxSize) / 2),
+      ).transform(animation.value),
+      child: child,
+    );
+  }
+
+  Transform _buildTransformX(
+      BoxConstraints constraints, double boxSize, Widget? child) {
+    return Transform.translate(
+      offset: Tween(
+        begin: Offset((-constraints.maxWidth + boxSize) / 2, 0),
+        end: Offset((constraints.maxHeight - boxSize) / 2, 0),
+      ).transform(animation.value),
+      child: child,
+    );
+  }
+
+  Transform _buildScale(Widget? child) {
+    return Transform.scale(
+      scale: animation.value,
+      child: child,
+    );
+  }
+
+  Transform _buildRotate(Widget? child) =>
+      Transform.rotate(angle: animation.value * pi, child: child);
 }
