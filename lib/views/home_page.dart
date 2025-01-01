@@ -100,9 +100,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   void playPauseAnimation() {
     if (controller.isAnimating) {
       controller.stop();
-      playPauseController.animateBack(0.0);
+      playPauseController.reverse();
     } else {
-      controller.repeat(reverse: true);
+      if (controller.isForwardOrCompleted) {
+        controller.repeat(reverse: true);
+      } else {
+        controller.reverse().then((value) => controller.repeat(reverse: true));
+      }
       playPauseController.forward();
     }
   }
