@@ -1,6 +1,13 @@
 BASE_HREF = '/'
 GITHUB_REPO := https://github.com/vchib1/vchib1.github.io.git
 
+clean:
+	@echo "Cleaning up..."
+	flutter clean
+	@echo "Getting Packages..."
+	flutter pub get
+	@echo "Success..."
+
 build:
 	@echo "Cleaning up..."
 	flutter clean
@@ -10,10 +17,7 @@ build:
 	flutter build web --wasm
 
 deploy:
-	@echo "Cleaning up..."
-	flutter clean
-	@echo "Getting Packages..."
-	flutter pub get
+	make clean
 	@echo "Building Web..."
 	flutter build web --base-href $(BASE_HREF) --release
 	@echo "Deploying Web to Repository..."
@@ -29,14 +33,9 @@ deploy:
 	@echo "Deployment Success :)"
 
 host:
+	make clean
 	flutter run -d web-server --web-port 8080 --web-hostname 0.0.0.0 --profile
 	@echo "Web server running on http://localhost:8080"
 
-clean:
-	@echo "Cleaning up..."
-	flutter clean
-	@echo "Getting Packages..."
-	flutter pub get
-	@echo "Success..."
 
 .phony: host clean deploy

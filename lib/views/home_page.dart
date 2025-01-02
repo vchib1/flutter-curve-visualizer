@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_curve_visualizer/views/widgets/screen_mode.dart';
 import 'package:flutter_curve_visualizer/utils/curves_enum.dart';
-import 'package:flutter_curve_visualizer/utils/extension/string.dart';
-import 'package:flutter_curve_visualizer/views/widgets/animated_box/animated_box_widget.dart';
 import 'package:flutter_curve_visualizer/views/widgets/appbar.dart';
 import 'package:flutter_curve_visualizer/views/widgets/dropdown_menu.dart';
 import 'package:flutter_curve_visualizer/views/widgets/graph/graph_widget.dart';
+import 'widgets/animated_box/animated_boxes.dart';
 import 'widgets/code_block.dart';
 
 class HomePage extends StatefulWidget {
@@ -70,6 +69,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   void updateCurve(CurvesEnum curve) {
+    if (curve == selectedCurve) return;
+
     setState(() {
       selectedCurve = curve;
       curveAnimation.curve = curve.curve;
@@ -115,11 +116,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     final screenMode = ScreenModeWidget.of(context);
 
-    final double spacing = switch (screenMode) {
-      ScreenMode.mobile => 20,
-      ScreenMode.tablet => 30,
-      ScreenMode.web => 30,
-    };
+    final double spacing = screenMode.spacing;
 
     final animationWidget = Column(
       children: [
@@ -130,34 +127,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         ),
 
         // Box Animations
-        SizedBox(
-          width: MediaQuery.of(context).size.width /
-              (screenMode.isMobileOrTablet ? 1 : 3),
-          child: Wrap(
-            spacing: spacing / 2,
-            runSpacing: spacing / 2,
-            runAlignment: WrapAlignment.center,
-            alignment: WrapAlignment.center,
-            children: AnimationType.values.map(
-              (animationType) {
-                return Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  spacing: 8.0,
-                  children: [
-                    Text(animationType.name.capitalizeFirst()),
-                    SizedBox.square(
-                      dimension: 100,
-                      child: AnimatedBoxWidget(
-                        animationType: animationType,
-                        animation: curveAnimation,
-                      ),
-                    ),
-                  ],
-                );
-              },
-            ).toList(),
-          ),
-        ),
+        AnimationBoxes(curveAnimation: curveAnimation),
       ],
     );
 
@@ -167,31 +137,45 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.end,
         spacing: spacing,
         children: [
           // Code block
           CodeBlock(curve: selectedCurve),
 
-          // Curve category
-          DropdownMenuWidget<String>(
-            title: "Category",
-            value: selectedCategory,
-            items: CurvesEnum.list.keys.toList(),
-            onChanged: updateCategory,
+          // Curve selector
+          Row(
+            spacing: 10,
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              // Curve category
+              Flexible(
+                child: DropdownMenuWidget<String>(
+                  title: "Category",
+                  value: selectedCategory,
+                  items: CurvesEnum.list.keys.toList(),
+                  onChanged: updateCategory,
+                ),
+              ),
+
+              // Curve type
+              Flexible(
+                flex: 2,
+                child: DropdownMenuWidget<CurvesEnum>(
+                  title: "Type",
+                  value: selectedCurve,
+                  items: CurvesEnum.list[selectedCategory]!..toList(),
+                  onChanged: (value) => updateCurve(value!),
+                  childBuilder: (context, value, textStyle) {
+                    return Text(value.name.toString(), style: textStyle);
+                  },
+                ),
+              ),
+            ],
           ),
 
-          // Curve type
-          DropdownMenuWidget<CurvesEnum>(
-            title: "Type",
-            value: selectedCurve,
-            items: CurvesEnum.list[selectedCategory]!..toList(),
-            onChanged: (value) => updateCurve(value!),
-            childBuilder: (context, value, textStyle) {
-              return Text(value.name.toString(), style: textStyle);
-            },
-          ),
-
-          // Curve type
+          // Animation time
           Container(
             padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
             decoration: BoxDecoration(
@@ -256,18 +240,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 spacing: spacing,
                 children: [
                   Expanded(
-                    flex: 1,
-                    child: Align(
-                      alignment: Alignment.centerRight,
-                      child: animationWidget,
-                    ),
+                    flex: 2,
+                    child: animationWidget,
                   ),
                   Flexible(
                     flex: 1,
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: controlsWidget,
-                    ),
+                    child: controlsWidget,
                   ),
                 ],
               ),

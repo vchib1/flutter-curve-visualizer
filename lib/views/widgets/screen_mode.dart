@@ -13,6 +13,12 @@ enum ScreenMode {
 
   bool get isMobileOrTablet =>
       this == ScreenMode.mobile || this == ScreenMode.tablet;
+
+  double get spacing => switch (this) {
+        ScreenMode.mobile => 10,
+        ScreenMode.tablet => 20,
+        ScreenMode.web => 20,
+      };
 }
 
 class ScreenModeWidget extends InheritedWidget {

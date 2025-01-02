@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class DropdownMenuWidget<T> extends StatelessWidget {
+  final double? width;
   final String title;
   final T? value;
   final List<T> items;
@@ -12,6 +13,7 @@ class DropdownMenuWidget<T> extends StatelessWidget {
     super.key,
     required this.title,
     required this.items,
+    this.width,
     this.childBuilder,
     this.onChanged,
     this.value,
@@ -24,6 +26,7 @@ class DropdownMenuWidget<T> extends StatelessWidget {
     final childTextStyle = Theme.of(context).textTheme.titleMedium;
 
     return Container(
+      width: width,
       padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.onPrimaryFixed,
