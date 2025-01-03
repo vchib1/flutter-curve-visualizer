@@ -33,7 +33,7 @@ class GraphWidget extends StatelessWidget {
 
     return SizedBox(
       width: screenSize.width * widthToTake,
-      height: screenSize.height / 2,
+      height: screenSize.height / 3,
       child: Center(
         child: CustomPaint(
           size: size,

@@ -119,6 +119,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     final double spacing = screenMode.spacing;
 
     final animationWidget = Column(
+      spacing: spacing,
+      mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
       children: [
         // Graph
         GraphWidget(
@@ -128,6 +131,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
         // Box Animations
         AnimationBoxes(curveAnimation: curveAnimation),
+        SizedBox(height: spacing * 2),
       ],
     );
 
@@ -214,18 +218,18 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           ),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Container(
-          alignment: Alignment.center,
-          width: MediaQuery.of(context).size.width,
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      body: Container(
+        alignment: Alignment.center,
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        width: double.infinity,
+        child: SingleChildScrollView(
           child: switch (ScreenModeWidget.of(context)) {
             ScreenMode.mobile => Column(
                 spacing: spacing,
                 children: [
                   animationWidget,
                   controlsWidget,
-                  const SizedBox(height: 10),
+                  SizedBox(height: spacing),
                 ],
               ),
             ScreenMode.tablet => Column(
@@ -233,11 +237,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 children: [
                   animationWidget,
                   controlsWidget,
-                  const SizedBox(height: 20),
+                  SizedBox(height: spacing),
                 ],
               ),
             ScreenMode.web => Row(
                 spacing: spacing,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Expanded(
                     flex: 2,
@@ -247,6 +252,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     flex: 1,
                     child: controlsWidget,
                   ),
+                  SizedBox(width: spacing * 3),
                 ],
               ),
           },

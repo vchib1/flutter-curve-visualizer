@@ -54,7 +54,7 @@ class GraphPainter extends CustomPainter {
     path.moveTo(0, (1 - points.first) * size.height);
 
     // Draw line segments based on the generated curve points
-    for (int i = 1; i < points.length; i++) {
+    for (int i = 0; i < points.length; i++) {
       // current point of the curve
       final currentX = controller.value * size.width;
       final currentY = (1 - points[i]) * size.height;
