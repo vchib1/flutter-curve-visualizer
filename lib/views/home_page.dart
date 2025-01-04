@@ -33,10 +33,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   void initState() {
     super.initState();
 
-    for (final list in CurveModel.list.values) {
-      debugPrint(list.length.toString());
-    }
-
     customCubicControllers = List.generate(4, (index) {
       final value = switch (index) {
         0 => "0.5",
