@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_curve_visualizer/model/curve_model.dart';
 import 'package:flutter_curve_visualizer/views/widgets/screen_mode.dart';
 import 'package:flutter_curve_visualizer/utils/curves_enum.dart';
 import 'package:flutter_curve_visualizer/views/widgets/appbar.dart';
@@ -6,6 +8,7 @@ import 'package:flutter_curve_visualizer/views/widgets/dropdown_menu.dart';
 import 'package:flutter_curve_visualizer/views/widgets/graph/graph_widget.dart';
 import 'widgets/animated_box/animated_boxes.dart';
 import 'widgets/code_block.dart';
+import 'widgets/cubic_curve_input_widget.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -20,15 +23,34 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   late CurvedAnimation curveAnimation;
 
   late String selectedCategory;
-  late CurvesEnum selectedCurve;
+  late CurveModel selectedCurve;
+
+  late List<TextEditingController> customCubicControllers;
 
   late int animationTime;
 
   @override
   void initState() {
     super.initState();
-    selectedCategory = CurvesEnum.list.keys.first;
-    selectedCurve = CurvesEnum.list.values.first.first;
+
+    for (final list in CurveModel.list.values) {
+      debugPrint(list.length.toString());
+    }
+
+    customCubicControllers = List.generate(4, (index) {
+      final value = switch (index) {
+        0 => "0.5",
+        1 => "0",
+        2 => "0.75",
+        3 => "1",
+        int() => throw UnimplementedError(),
+      };
+
+      return TextEditingController(text: value);
+    });
+
+    selectedCategory = CurveModel.list.keys.first;
+    selectedCurve = CurveModel.list.values.first.first;
 
     animationTime = 2;
 
@@ -50,6 +72,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   void dispose() {
+    for (final controller in customCubicControllers) {
+      controller.dispose();
+    }
+
     playPauseController.dispose();
     controller.dispose();
     super.dispose();
@@ -60,7 +86,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
     setState(() {
       selectedCategory = category;
-      selectedCurve = CurvesEnum.list[category]!.first;
+      selectedCurve = CurveModel.list[category]!.first;
       curveAnimation = CurvedAnimation(
         parent: controller,
         curve: selectedCurve.curve,
@@ -68,7 +94,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     });
   }
 
-  void updateCurve(CurvesEnum curve) {
+  void updateCurve(CurveModel curve) {
     if (curve == selectedCurve) return;
 
     setState(() {
@@ -145,7 +171,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         spacing: spacing,
         children: [
           // Code block
-          CodeBlock(curve: selectedCurve),
+          CodeBlock(code: selectedCurve.code),
 
           // Curve selector
           Row(
@@ -166,10 +192,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               // Curve type
               Flexible(
                 flex: 2,
-                child: DropdownMenuWidget<CurvesEnum>(
+                child: DropdownMenuWidget<CurveModel>(
                   title: "Type",
                   value: selectedCurve,
-                  items: CurvesEnum.list[selectedCategory]!..toList(),
+                  items: CurveModel.list[selectedCategory]!.toList(),
                   onChanged: (value) => updateCurve(value!),
                   childBuilder: (context, value, textStyle) {
                     return Text(value.name.toString(), style: textStyle);
@@ -202,6 +228,24 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               ],
             ),
           ),
+
+          // TODO : TextField have some issues with current flutter version, waiting it to be fixed
+          Visibility(
+            visible: false,
+            child: AnimatedSize(
+              curve: Curves.fastOutSlowIn,
+              duration: 200.ms,
+              reverseDuration: 200.ms,
+              child: (selectedCurve.isCustom)
+                  ? CubicCurveInputWidget(
+                      controllers: customCubicControllers,
+                      onApply: (curve) {
+                        updateCurve(selectedCurve.copyWith(curve: curve));
+                      },
+                    )
+                  : const SizedBox.shrink(),
+            ),
+          )
         ],
       ),
     );

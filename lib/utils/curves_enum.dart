@@ -44,7 +44,7 @@ enum CurvesEnum {
   elasticIn(Curves.elasticIn),
   elasticOut(Curves.elasticOut),
   elasticInOut(Curves.elasticInOut),
-  custom(Cubic(0.48, 1.26, 0.41, 0.6));
+  custom(Cubic(.5, 0, .5, 1));
 
   final Curve curve;
 
@@ -111,5 +111,8 @@ final otherCurves = [
   CurvesEnum.linear,
   CurvesEnum.decelerate,
   CurvesEnum.slowMiddle,
-  //CurvesEnum.custom,
+  CurvesEnum.fastOutSlowIn,
+  CurvesEnum.fastEaseInToSlowEaseOut,
+  CurvesEnum.fastLinearToSlowEaseIn,
+  CurvesEnum.custom,
 ];

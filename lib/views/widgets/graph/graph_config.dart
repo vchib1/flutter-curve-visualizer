@@ -16,7 +16,7 @@ class GraphConfiguration {
   const GraphConfiguration({
     this.xAxisLineCount = 10,
     this.yAxisLineCount = 10,
-    this.curveDivisions = 500,
+    this.curveDivisions = 1000,
     required this.axisColor,
     required this.curveLineColor,
     required this.graphMarkerColor,

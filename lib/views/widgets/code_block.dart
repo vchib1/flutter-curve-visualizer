@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_curve_visualizer/views/widgets/screen_mode.dart';
-import 'package:flutter_curve_visualizer/utils/curves_enum.dart';
 
 class CodeBlock extends StatelessWidget {
-  final CurvesEnum curve;
+  final String code;
 
-  CodeBlock({super.key, CurvesEnum? curve})
-      : curve = curve ?? CurvesEnum.values.first;
+  const CodeBlock({super.key, required this.code});
 
   void copyCode(BuildContext context, String code) {
     Clipboard.setData(ClipboardData(text: code));
@@ -38,8 +36,6 @@ class CodeBlock extends StatelessWidget {
       Color(0xfffbbe27),
       Color(0xff2bc542),
     ];
-
-    final code = "Curve.${curve.name}";
 
     return Container(
       padding: EdgeInsets.all(8.0),
