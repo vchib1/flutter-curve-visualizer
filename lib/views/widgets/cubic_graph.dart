@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'screen_mode.dart';
-
 class CubicGraph extends StatefulWidget {
   const CubicGraph({super.key});
 
@@ -131,7 +129,7 @@ class CubicGraphPainter extends CustomPainter {
     // Graph background
     canvas.drawRect(
       Offset.zero & size,
-      Paint()..color = Colors.grey.withOpacity(0.1),
+      Paint()..color = Colors.grey.withValues(alpha: 0.1),
     );
 
     // x axis
