@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'utils/theme/theme_provider.dart';
 import 'views/home_page.dart';
+import 'views/widgets/animated_box/provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -13,8 +14,11 @@ Future<void> main() async {
   final pref = await SharedPreferences.getInstance();
 
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => ThemeProvider(pref: pref),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => ThemeProvider(pref: pref)),
+        ChangeNotifierProvider(create: (context) => AnimatedBoxesProvider(pref: pref)),
+      ],
       child: const MyApp(),
     ),
   );

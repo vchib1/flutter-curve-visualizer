@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'screen_mode.dart';
+
 class CubicGraph extends StatefulWidget {
   const CubicGraph({super.key});
 
@@ -13,18 +15,6 @@ class _CubicGraphState extends State<CubicGraph> {
   bool isDraggingX2 = false;
   bool isDraggingY2 = false;
 
-  // Size of the actual graph area
-  static const graphSize = Size(350, 300);
-
-  // Size of the draggable area
-  static const containerSize = Size(500, 500);
-
-  // Offset to center the graph in the container
-  static final graphOffset = Offset(
-    (containerSize.width - graphSize.width) / 2,
-    (containerSize.height - graphSize.height) / 2,
-  );
-
   void _updatePosition(Offset position) {
     setState(() {
       if (isDraggingX2) {
@@ -37,20 +27,25 @@ class _CubicGraphState extends State<CubicGraph> {
 
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.sizeOf(context);
+
+    // Size of the actual graph area
+    final graphSize = Size(350, 300);
+
+    // Size of the draggable area
+    final containerSize = Size(screenSize.width, screenSize.height);
+
+    // Offset to center the graph in the container
+    final graphOffset = Offset(
+      (containerSize.width - graphSize.width) / 2,
+      (containerSize.height - graphSize.height) / 2,
+    );
+
     return MouseRegion(
       cursor: isDraggingX2 || isDraggingY2
           ? SystemMouseCursors.grabbing
           : SystemMouseCursors.basic,
       child: GestureDetector(
-        onTapDown: (details) {
-          final pos = details.localPosition;
-          if ((pos - (x2Position + graphOffset)).distance < 20) {
-            setState(() => isDraggingX2 = true);
-          } else if ((pos - (y2Position + graphOffset)).distance < 20) {
-            setState(() => isDraggingY2 = true);
-          }
-          _updatePosition(details.localPosition - graphOffset);
-        },
         onPanStart: (details) {
           final pos = details.localPosition;
           if ((pos - (x2Position + graphOffset)).distance < 20) {

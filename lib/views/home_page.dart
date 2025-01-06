@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_curve_visualizer/model/curve_model.dart';
+import 'package:flutter_curve_visualizer/views/widgets/animated_box/animated_box_widget.dart';
 import 'package:flutter_curve_visualizer/views/widgets/screen_mode.dart';
 import 'package:flutter_curve_visualizer/utils/curves_enum.dart';
 import 'package:flutter_curve_visualizer/views/widgets/appbar.dart';
 import 'package:flutter_curve_visualizer/views/widgets/dropdown_menu.dart';
 import 'package:flutter_curve_visualizer/views/widgets/graph/graph_widget.dart';
+import 'package:provider/provider.dart';
 import 'widgets/animated_box/animated_boxes.dart';
+import 'widgets/animated_box/provider.dart';
 import 'widgets/code_block.dart';
 import 'widgets/cubic_curve_input_widget.dart';
 
@@ -152,7 +155,26 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         ),
 
         // Box Animations
-        AnimationBoxes(curveAnimation: curveAnimation),
+        Consumer<AnimatedBoxesProvider>(
+          builder: (context, value, child) {
+            final list = value.animationBoxReordableList;
+
+            return AnimationBoxes(
+              curveAnimation: curveAnimation,
+              animationTypes: list,
+              onAcceptWithDetails: (details, item) {
+                final oldIndex = list.indexOf(details.data);
+                final newIndex = list.indexOf(item);
+
+                if (oldIndex != -1 && newIndex != -1) {
+                  list.removeAt(oldIndex);
+                  list.insert(newIndex, details.data);
+                  value.saveList(list);
+                }
+              },
+            );
+          },
+        ),
         SizedBox(height: spacing * 2),
       ],
     );
