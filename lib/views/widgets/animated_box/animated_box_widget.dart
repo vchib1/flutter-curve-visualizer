@@ -27,31 +27,36 @@ class AnimatedBoxWidget extends StatelessWidget {
           child: SizedBox.square(dimension: boxSize),
         ),
         builder: (context, child) {
-          return ColoredBox(
-            color: theme.onPrimaryFixed,
-            child: Align(
-              alignment: Alignment.center,
-              child: switch (animationType) {
-                /// Translate x
-                AnimationType.translateX =>
-                  _buildTransformX(constraints, boxSize, child),
+          return PhysicalModel(
+            color: Colors.transparent,
+            shadowColor: theme.shadow,
+            elevation: 1.0,
+            child: ColoredBox(
+              color: theme.onPrimaryFixed,
+              child: Align(
+                alignment: Alignment.center,
+                child: switch (animationType) {
+                  /// Translate x
+                  AnimationType.translateX =>
+                    _buildTransformX(constraints, boxSize, child),
 
-                /// Translate Y
-                AnimationType.translateY =>
-                  _buildTransformY(constraints, boxSize, child),
+                  /// Translate Y
+                  AnimationType.translateY =>
+                    _buildTransformY(constraints, boxSize, child),
 
-                /// Rotate
-                AnimationType.rotate => _buildRotate(child),
+                  /// Rotate
+                  AnimationType.rotate => _buildRotate(child),
 
-                /// Scale
-                AnimationType.scale => _buildScale(child),
+                  /// Scale
+                  AnimationType.scale => _buildScale(child),
 
-                /// Fade
-                AnimationType.fade => _buildFade(child),
+                  /// Fade
+                  AnimationType.fade => _buildFade(child),
 
-                /// Flip
-                AnimationType.flip => _buildFlip(child),
-              },
+                  /// Flip
+                  AnimationType.flip => _buildFlip(child),
+                },
+              ),
             ),
           );
         },

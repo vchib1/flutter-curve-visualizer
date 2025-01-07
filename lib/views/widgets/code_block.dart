@@ -39,46 +39,55 @@ class CodeBlock extends StatelessWidget {
       Color(0xff2bc542),
     ];
 
-    return Container(
-      padding: EdgeInsets.all(8.0),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.onPrimaryFixed,
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        spacing: spacing,
-        children: [
-          Align(
-            alignment: Alignment.topCenter,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Wrap(
-                  spacing: 5,
-                  children: List.from(lightsColors).map((color) {
-                    return CircleAvatar(radius: radius, backgroundColor: color);
-                  }).toList(),
-                ),
-                Spacer(),
-                GestureDetector(
-                  onTap: () => copyCode(context, code),
-                  child: Icon(
-                    Icons.copy,
-                    color: Theme.of(context).colorScheme.onSurface,
-                    size: 16,
+    final borderRadius = BorderRadius.circular(10);
+
+    return PhysicalModel(
+      color: Colors.transparent,
+      shadowColor: Theme.of(context).colorScheme.shadow,
+      elevation: 1.0,
+      borderRadius: borderRadius,
+      child: Container(
+        padding: EdgeInsets.all(8.0),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.onPrimaryFixed,
+          borderRadius: borderRadius,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          spacing: spacing,
+          children: [
+            Align(
+              alignment: Alignment.topCenter,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Wrap(
+                    spacing: 5,
+                    children: List.from(lightsColors).map((color) {
+                      return CircleAvatar(
+                          radius: radius, backgroundColor: color);
+                    }).toList(),
                   ),
-                )
-              ],
+                  Spacer(),
+                  GestureDetector(
+                    onTap: () => copyCode(context, code),
+                    child: Icon(
+                      Icons.copy,
+                      color: Theme.of(context).colorScheme.onSurface,
+                      size: 16,
+                    ),
+                  )
+                ],
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(code, style: codeStyle),
-          ),
-        ],
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(code, style: codeStyle),
+            ),
+          ],
+        ),
       ),
     );
   }

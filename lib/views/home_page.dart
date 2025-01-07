@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_curve_visualizer/model/curve_model.dart';
 import 'package:flutter_curve_visualizer/views/widgets/screen_mode.dart';
-import 'package:flutter_curve_visualizer/utils/curves_enum.dart';
 import 'package:flutter_curve_visualizer/views/widgets/appbar.dart';
 import 'package:flutter_curve_visualizer/views/widgets/dropdown_menu.dart';
 import 'package:flutter_curve_visualizer/views/widgets/graph/graph_widget.dart';
+import 'package:flutter_curve_visualizer/views/widgets/time_slider.dart';
 import 'package:provider/provider.dart';
 import 'widgets/animated_box/animated_boxes.dart';
 import 'widgets/animated_box/provider.dart';
@@ -85,10 +85,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     setState(() {
       selectedCategory = category;
       selectedCurve = CurveModel.list[category]!.first;
-      curveAnimation = CurvedAnimation(
-        parent: controller,
-        curve: selectedCurve.curve,
-      );
+      curveAnimation.curve = selectedCurve.curve;
     });
   }
 
@@ -201,7 +198,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 child: DropdownMenuWidget<String>(
                   title: "Category",
                   value: selectedCategory,
-                  items: CurvesEnum.list.keys.toList(),
+                  items: CurveModel.list.keys.toList(),
                   onChanged: updateCategory,
                 ),
               ),
@@ -223,27 +220,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           ),
 
           // Animation time
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.onPrimaryFixed,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Time: ${animationTime}s",
-                  style: Theme.of(context).textTheme.titleSmall,
-                ),
-                Slider(
-                  value: animationTime.toDouble(),
-                  min: 1.0,
-                  max: 10.0,
-                  onChanged: updateAnimationTime,
-                ),
-              ],
-            ),
+          TimeSlider(
+            animationTime: animationTime,
+            onChanged: updateAnimationTime,
           ),
 
           // TODO : TextField have some issues with current flutter version, waiting it to be fixed
