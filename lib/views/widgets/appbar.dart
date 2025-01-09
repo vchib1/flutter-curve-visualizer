@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_curve_visualizer/utils/theme/theme_provider.dart';
+import 'package:flutter_curve_visualizer/views/widgets/animated_theme_switch/widget.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -11,11 +12,13 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
+    final actionPadding = const EdgeInsets.only(right: 12.0);
+
     return AppBar(
       title: const Text('Flutter Curve Visualizer'),
       actions: [
         Padding(
-          padding: const EdgeInsets.only(right: 12.0),
+          padding: actionPadding,
           child: IconButton(
             onPressed: () {
               launchUrl(Uri.parse(
@@ -33,19 +36,8 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.only(right: 12.0),
-          child: Consumer<ThemeProvider>(
-            builder: (context, value, child) {
-              final iconData = value.getThemeMode() == ThemeMode.dark
-                  ? Icons.light_mode
-                  : Icons.dark_mode;
-
-              return IconButton(
-                onPressed: () => value.toggleTheme(),
-                icon: Icon(iconData),
-              );
-            },
-          ),
+          padding: actionPadding,
+          child: AnimatedThemeSwitcher(),
         ),
       ],
     );

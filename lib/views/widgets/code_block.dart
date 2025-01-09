@@ -14,9 +14,7 @@ class CodeBlock extends StatelessWidget {
 
     ScaffoldMessenger.of(context)
       ..clearSnackBars()
-      ..showSnackBar(
-        const SnackBar(content: Text('Copied to clipboard')),
-      );
+      ..showSnackBar(const SnackBar(content: Text('Copied to clipboard')));
   }
 
   @override

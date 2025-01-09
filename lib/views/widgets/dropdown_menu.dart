@@ -1,20 +1,18 @@
 import 'package:flutter/material.dart';
 
 class DropdownMenuWidget<T> extends StatelessWidget {
-  final double? width;
   final String title;
   final T? value;
   final List<T> items;
   final Widget Function(BuildContext context, T value, TextStyle? textStyle)?
-      childBuilder;
+      builder;
   final void Function(T?)? onChanged;
 
   const DropdownMenuWidget({
     super.key,
     required this.title,
     required this.items,
-    this.width,
-    this.childBuilder,
+    this.builder,
     this.onChanged,
     this.value,
   });
@@ -25,39 +23,32 @@ class DropdownMenuWidget<T> extends StatelessWidget {
 
     final childTextStyle = Theme.of(context).textTheme.titleMedium;
 
-    final borderRadius = BorderRadius.circular(10);
-
     return PhysicalModel(
-      color: Colors.transparent,
+      color: Theme.of(context).colorScheme.onPrimaryFixed,
       shadowColor: Theme.of(context).colorScheme.shadow,
       elevation: 1.0,
-      borderRadius: borderRadius,
-      child: Container(
-        width: width,
-        padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.onPrimaryFixed,
-          borderRadius: borderRadius,
-        ),
+      borderRadius: BorderRadius.circular(10),
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(16, 8, 16, 0.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(title, style: titleStyle),
             DropdownButton<T>(
               value: value,
-              underline: SizedBox.shrink(),
+              onChanged: onChanged,
+              underline: const SizedBox.shrink(),
               isExpanded: true,
+              isDense: false,
               items: items.map(
-                (e) {
+                (item) {
                   return DropdownMenuItem<T>(
-                    value: e,
-                    child: childBuilder == null
-                        ? Text(e.toString(), style: childTextStyle)
-                        : childBuilder!(context, e, childTextStyle),
+                    value: item,
+                    child: builder?.call(context, item, childTextStyle) ??
+                        Text(item.toString(), style: childTextStyle),
                   );
                 },
               ).toList(),
-              onChanged: onChanged,
             ),
           ],
         ),
