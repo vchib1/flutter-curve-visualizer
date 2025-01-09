@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 
 class TimeSlider extends StatelessWidget {
-
-  const TimeSlider({super.key, required this.animationTime, this.onChanged});
+  const TimeSlider({
+    super.key,
+    required this.animationTime,
+    this.onChanged,
+  });
 
   final int animationTime;
   final void Function(double)? onChanged;
 
   @override
   Widget build(BuildContext context) {
-
     final borderRadius = BorderRadius.circular(10);
 
     return PhysicalModel(

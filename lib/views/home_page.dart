@@ -10,7 +10,6 @@ import 'package:provider/provider.dart';
 import 'widgets/animated_box/animated_boxes.dart';
 import 'widgets/animated_box/provider.dart';
 import 'widgets/code_block.dart';
-import 'widgets/cubic_curve_input_widget.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -27,25 +26,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   late String selectedCategory;
   late CurveModel selectedCurve;
 
-  late List<TextEditingController> customCubicControllers;
-
   late int animationTime;
 
   @override
   void initState() {
     super.initState();
-
-    customCubicControllers = List.generate(4, (index) {
-      final value = switch (index) {
-        0 => "0.5",
-        1 => "0",
-        2 => "0.75",
-        3 => "1",
-        int() => throw UnimplementedError(),
-      };
-
-      return TextEditingController(text: value);
-    });
 
     selectedCategory = CurveModel.list.keys.first;
     selectedCurve = CurveModel.list.values.first.first;
@@ -54,7 +39,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
     playPauseController = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 250),
+      duration: 100.ms,
+      reverseDuration: 100.ms,
     )..forward();
 
     controller = AnimationController(
@@ -70,10 +56,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    for (final controller in customCubicControllers) {
-      controller.dispose();
-    }
-
     playPauseController.dispose();
     controller.dispose();
     super.dispose();
@@ -207,11 +189,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               Flexible(
                 flex: 2,
                 child: DropdownMenuWidget<CurveModel>(
-                  title: "Type",
+                  title: "Curve",
                   value: selectedCurve,
                   items: CurveModel.list[selectedCategory]!.toList(),
                   onChanged: (value) => updateCurve(value!),
-                  childBuilder: (context, value, textStyle) {
+                  builder: (context, value, textStyle) {
                     return Text(value.name.toString(), style: textStyle);
                   },
                 ),
@@ -224,24 +206,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             animationTime: animationTime,
             onChanged: updateAnimationTime,
           ),
-
-          // TODO : TextField have some issues with current flutter version, waiting it to be fixed
-          Visibility(
-            visible: false,
-            child: AnimatedSize(
-              curve: Curves.fastOutSlowIn,
-              duration: 200.ms,
-              reverseDuration: 200.ms,
-              child: (selectedCurve.isCustom)
-                  ? CubicCurveInputWidget(
-                      controllers: customCubicControllers,
-                      onApply: (curve) {
-                        updateCurve(selectedCurve.copyWith(curve: curve));
-                      },
-                    )
-                  : const SizedBox.shrink(),
-            ),
-          )
         ],
       ),
     );
