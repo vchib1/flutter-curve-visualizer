@@ -17,7 +17,8 @@ Future<void> main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => ThemeProvider(pref: pref)),
-        ChangeNotifierProvider(create: (context) => AnimatedBoxesProvider(pref: pref)),
+        ChangeNotifierProvider(
+            create: (context) => AnimatedBoxesProvider(pref: pref)),
       ],
       child: const MyApp(),
     ),
