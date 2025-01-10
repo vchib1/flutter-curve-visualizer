@@ -66929,7 +66929,7 @@ e.l1(A.nV(new A.c(i,g),j))
 a.c6()
 a.bc(i,g)
 s=m.c
-a.ra(1-s.gm()*3.141592653589793)
+a.ra(s.gm()*3.141592653589793)
 r=f.ck()
 q=-k/2
 p=q+k
@@ -66946,8 +66946,8 @@ f.L1(e.d6(new A.c(o,n)),B.i)
 f.sBk(B.ie)
 a.h1(f,m.gA4())
 a.bM()
-a.ik(new A.c(i+s.gm()*l*0.1,g-s.gm()*h*0.1),j-2,m.gA4())},
-hq(a){return!1}}
+a.ik(new A.c(i+s.gm()*l*0.1,g-s.gm()*h*0.125),j*0.7,m.gA4())},
+hq(a){return a.c.gm()!==this.c.gm()}}
 A.ud.prototype={
 ag(){return new A.Lc(null,null)}}
 A.Lc.prototype={
