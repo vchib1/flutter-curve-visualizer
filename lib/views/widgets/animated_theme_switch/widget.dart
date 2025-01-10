@@ -11,7 +11,7 @@ class AnimatedThemeSwitcher extends StatefulWidget {
 }
 
 class _AnimatedThemeSwitcherState extends State<AnimatedThemeSwitcher>
-    with TickerProviderStateMixin {
+    with SingleTickerProviderStateMixin {
   late AnimationController controller;
 
   late Animation<double> animation;
@@ -21,12 +21,12 @@ class _AnimatedThemeSwitcherState extends State<AnimatedThemeSwitcher>
     super.initState();
     controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 750),
     );
 
     animation = CurvedAnimation(
       parent: controller,
-      curve: Curves.easeInOutCubic,
+      curve: Curves.easeInOutBack,
     );
   }
 

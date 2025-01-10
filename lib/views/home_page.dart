@@ -71,8 +71,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     });
   }
 
-  void updateCurve(CurveModel curve) {
-    if (curve == selectedCurve) return;
+  void updateCurve(CurveModel? curve) {
+    if (curve == null || curve == selectedCurve) return;
 
     setState(() {
       selectedCurve = curve;
@@ -192,7 +192,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   title: "Curve",
                   value: selectedCurve,
                   items: CurveModel.list[selectedCategory]!.toList(),
-                  onChanged: (value) => updateCurve(value!),
+                  onChanged: updateCurve,
                   builder: (context, value, textStyle) {
                     return Text(value.name.toString(), style: textStyle);
                   },

@@ -33,7 +33,7 @@ class ThemeSwitchPainter extends CustomPainter {
     canvas.translate(center.dx, center.dy);
 
     // rotate canvas with animation value
-    canvas.rotate(1 - animation.value * pi);
+    canvas.rotate((1 - animation.value) * pi / 2);
 
     // draw a box with an additional path to clip center circle
     canvas.drawPath(
@@ -61,16 +61,16 @@ class ThemeSwitchPainter extends CustomPainter {
 
     // now draw a circle at the center
     // and translate it with animation to form a moon shape from center to top-right
-    final moonRadius = radius - 2;
+    final moonRadius = radius * .70;
 
-    final translateX = size.width / 2 + (animation.value * size.width * .10);
-    final translateY = size.height / 2 - (animation.value * size.height * .10);
+    final translateX = size.width / 2 + (animation.value * size.width * .125);
+    final translateY = size.height / 2 - (animation.value * size.height * .075);
 
     canvas.drawCircle(Offset(translateX, translateY), moonRadius, canvasPaint);
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return false;
+  bool shouldRepaint(covariant ThemeSwitchPainter oldDelegate) {
+    return oldDelegate.animation.value != animation.value;
   }
 }
