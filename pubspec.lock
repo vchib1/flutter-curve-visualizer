@@ -176,6 +176,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.1"
+  light_dark_theme_toggle:
+    dependency: "direct main"
+    description:
+      name: light_dark_theme_toggle
+      sha256: "1c8137460fd122f9d6652b97a5649c9f6faa489ae932bebb07d91c65b366c6e9"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0"
   lints:
     dependency: transitive
     description:

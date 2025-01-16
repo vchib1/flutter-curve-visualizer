@@ -40,6 +40,7 @@ dependencies:
   flutter_svg: ^2.0.16
   flutter_animate: ^4.5.2
   equatable: ^2.0.7
+  light_dark_theme_toggle: ^1.0.0
 
 dev_dependencies:
   flutter_test:
