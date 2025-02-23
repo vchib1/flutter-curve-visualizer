@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 
 class TimeSlider extends StatelessWidget {
-  const TimeSlider({
-    super.key,
-    required this.animationTime,
-    this.onChanged,
-  });
+  const TimeSlider({super.key, required this.animationTime, this.onChanged});
 
   final int animationTime;
   final void Function(double)? onChanged;
@@ -33,9 +29,11 @@ class TimeSlider extends StatelessWidget {
               style: Theme.of(context).textTheme.titleSmall,
             ),
             Slider(
+              year2023: false,
               value: animationTime.toDouble(),
               min: 1.0,
               max: 10.0,
+              inactiveColor: Theme.of(context).colorScheme.surfaceDim,
               onChanged: onChanged,
             ),
           ],

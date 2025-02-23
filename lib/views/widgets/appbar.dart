@@ -35,8 +35,11 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
             padding: actionPadding,
             child: IconButton(
               onPressed: () {
-                launchUrl(Uri.parse(
-                    "https://github.com/vchib1/flutter-curve-visualizer"));
+                launchUrl(
+                  Uri.parse(
+                    "https://github.com/vchib1/flutter-curve-visualizer",
+                  ),
+                );
               },
               icon: SvgPicture.asset(
                 "assets/svg/github.svg",
@@ -51,16 +54,19 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
           ),
           Padding(
             padding: actionPadding,
-            child: Consumer<ThemeProvider>(builder: (context, value, child) {
-              return LightDarkThemeToggle(
+            child: Consumer<ThemeProvider>(
+              builder: (context, value, child) {
+                return LightDarkThemeToggle(
                   themeIconType: ThemeIconType.expand,
-                  duration: 500.milliseconds,
-                  reverseDuration: 500.milliseconds,
+                  duration: 350.milliseconds,
+                  reverseDuration: 350.milliseconds,
                   value: value.getThemeMode() == ThemeMode.dark,
                   onChanged: (isDark) {
                     value.toggleTheme();
-                  });
-            }),
+                  },
+                );
+              },
+            ),
           ),
         ],
       ),
