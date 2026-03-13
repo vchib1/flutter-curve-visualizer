@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_curve_visualizer/views/widgets/graph/graph_settings.dart';
 import 'graph_config.dart';
 
 class GraphPainter extends CustomPainter {
@@ -6,11 +7,13 @@ class GraphPainter extends CustomPainter {
     required this.controller,
     required this.animation,
     required this.config,
+    required this.settings,
   }) : super(repaint: animation);
 
   final CurvedAnimation animation;
   final AnimationController controller;
   final GraphConfiguration config;
+  final GraphSettings settings;
 
   int get divisions => config.curveDivisions;
 
@@ -22,15 +25,37 @@ class GraphPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final points = generateCurveValues(animation, divisions);
 
-    _drawAxis(canvas, size);
+    _drawAxisLines(canvas, size);
     _drawCurveBg(canvas, points, size);
     _drawCurve(canvas, points, size);
+    _drawAxisValueMarkers(canvas, size);
     _drawCurrentValueMarker(canvas, size, points);
   }
 
+  // Draws Vertical Line for the Current Value
+  void _drawAxisValueMarkers(Canvas canvas, Size size) {
+    final progress = controller.value; // 0.0 → 1.0
+
+    final paint = Paint()
+      ..color = config.curveOutlineColor
+      ..strokeWidth = 1
+      ..strokeCap = StrokeCap.round
+      ..isAntiAlias = true;
+
+    // Vertical Line (X position)
+    final dx = progress * size.width;
+
+    final verticalStart = Offset(dx, 0);
+    final verticalEnd = Offset(dx, size.height);
+
+    canvas.drawLine(verticalStart, verticalEnd, paint);
+  }
+
+  // Draws Current Value Circular Marker
   void _drawCurrentValueMarker(Canvas canvas, Size size, List<double> points) {
     final xPos = controller.value * size.width;
-    final yPos = (1 - points[(controller.value * (divisions - 1)).floor()]) *
+    final yPos =
+        (1 - points[(controller.value * (divisions - 1)).floor()]) *
         size.height;
 
     Paint markerPaint = Paint()
@@ -41,6 +66,7 @@ class GraphPainter extends CustomPainter {
     canvas.drawCircle(Offset(xPos, yPos), config.pointerSize, markerPaint);
   }
 
+  // Draws & animate the curve of the animation
   void _drawCurve(Canvas canvas, List<double> points, Size size) {
     Paint curvePaint = Paint()
       ..color = config.curveLineColor
@@ -76,9 +102,8 @@ class GraphPainter extends CustomPainter {
     canvas.drawPath(path, curvePaint);
   }
 
+  // Draws the preview curve
   void _drawCurveBg(Canvas canvas, List<double> points, Size size) {
-    if (!config.showCurveOutline) return;
-
     Paint curvePaint = Paint()
       ..color = config.curveOutlineColor
       ..strokeCap = StrokeCap.round
@@ -103,7 +128,8 @@ class GraphPainter extends CustomPainter {
     canvas.drawPath(path, curvePaint);
   }
 
-  void _drawAxis(Canvas canvas, Size size) {
+  // Draws Background Axis Lines
+  void _drawAxisLines(Canvas canvas, Size size) {
     Paint axisPaint = Paint()
       ..color = config.axisColor
       ..strokeWidth = config.axisWidth
@@ -111,27 +137,44 @@ class GraphPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke;
 
+    Paint boldAxisPaint = Paint()
+      ..color = config.axisColor
+      ..strokeWidth = config.curveLineBoldWidth
+      ..isAntiAlias = true
+      ..strokeCap = StrokeCap.round
+      ..style = PaintingStyle.stroke;
+
     // Draw X-axis lines
-    for (int i = 0; i <= config.xAxisLineCount; i++) {
-      final x = i / config.xAxisLineCount * size.width;
+    for (int i = 0; i < config.xAxisLineCount; i++) {
+      final x = (i / config.xAxisLineCount * size.width).roundToDouble();
       final y = size.height;
-      canvas.drawLine(Offset(x, 0), Offset(x, y), axisPaint);
+
+      if (i == 0) {
+        canvas.drawLine(Offset(x, 0), Offset(x, y), boldAxisPaint);
+      } else {
+        if (!settings.enableAxisLines) continue;
+        canvas.drawLine(Offset(x, 0), Offset(x, y), axisPaint);
+      }
     }
 
-    for (int i = 0; i <= config.yAxisLineCount; i++) {
+    for (int i = 1; i <= config.yAxisLineCount; i++) {
       final x = size.width;
-      final y = i / config.yAxisLineCount * size.height;
-      canvas.drawLine(Offset(0, y), Offset(x, y), axisPaint);
+      final y = (i / config.yAxisLineCount * size.height).roundToDouble();
+
+      if (i == config.yAxisLineCount) {
+        canvas.drawLine(Offset(0, y), Offset(x, y), boldAxisPaint);
+      } else {
+        if (!settings.enableAxisLines) continue;
+        canvas.drawLine(Offset(0, y), Offset(x, y), axisPaint);
+      }
     }
   }
 }
 
+// creates a list of curve values to draw on graph
 List<double> generateCurveValues(CurvedAnimation anim, int divisions) {
-  return List.generate(
-    divisions,
-    (index) {
-      double progress = index / (divisions - 1);
-      return anim.curve.transform(progress);
-    },
-  );
+  return List.generate(divisions, (index) {
+    double progress = index / (divisions - 1);
+    return anim.curve.transform(progress);
+  });
 }

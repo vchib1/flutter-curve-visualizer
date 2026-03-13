@@ -337,19 +337,29 @@ class MaterialTheme {
   }
 
   ThemeData theme(ColorScheme colorScheme) => ThemeData(
-        primaryColor: ThemeColors.primaryColor,
-        useMaterial3: true,
-        brightness: colorScheme.brightness,
-        colorScheme: colorScheme,
-        snackBarTheme: SnackBarThemeData(showCloseIcon: true),
-        textTheme: textTheme.apply(
-          fontFamily: "Outfit",
-          bodyColor: colorScheme.onSurface,
-          displayColor: colorScheme.onSurface,
-        ),
-        scaffoldBackgroundColor: colorScheme.surface,
-        canvasColor: colorScheme.surface,
-      );
+    primaryColor: ThemeColors.primaryColor,
+    useMaterial3: true,
+    brightness: colorScheme.brightness,
+    colorScheme: colorScheme,
+    snackBarTheme: SnackBarThemeData(showCloseIcon: true),
+    scaffoldBackgroundColor: colorScheme.surface,
+    canvasColor: colorScheme.surface,
+    textTheme: textTheme.apply(
+      fontFamily: "Outfit",
+      bodyColor: colorScheme.onSurface,
+      displayColor: colorScheme.onSurface,
+    ),
+    listTileTheme: ListTileThemeData(
+      tileColor: colorScheme.onPrimaryFixed,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadiusGeometry.circular(12),
+      ),
+      contentPadding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+    ),
+    dropdownMenuTheme: DropdownMenuThemeData(
+      menuStyle: MenuStyle(elevation: WidgetStateProperty.all(0.0)),
+    ),
+  );
 
   List<ExtendedColor> get extendedColors => [];
 }

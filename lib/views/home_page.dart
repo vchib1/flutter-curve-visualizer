@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_curve_visualizer/model/curve_model.dart';
+import 'package:flutter_curve_visualizer/views/widgets/graph/graph_settings.dart';
 import 'package:flutter_curve_visualizer/views/widgets/screen_mode.dart';
 import 'package:flutter_curve_visualizer/views/widgets/appbar.dart';
 import 'package:flutter_curve_visualizer/views/widgets/dropdown_menu.dart';
 import 'package:flutter_curve_visualizer/views/widgets/graph/graph_widget.dart';
+import 'package:flutter_curve_visualizer/views/widgets/switch.dart';
 import 'package:flutter_curve_visualizer/views/widgets/time_slider.dart';
 import 'package:provider/provider.dart';
 import 'widgets/animated_box/animated_boxes.dart';
@@ -23,19 +25,20 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   late AnimationController controller;
   late CurvedAnimation curveAnimation;
 
-  late String selectedCategory;
-  late CurveModel selectedCurve;
-
-  late int animationTime;
+  late GraphSettings settings;
 
   @override
   void initState() {
     super.initState();
 
-    selectedCategory = CurveModel.list.keys.first;
-    selectedCurve = CurveModel.list.values.first.first;
-
-    animationTime = 2;
+    settings = GraphSettings(
+      selectedCategory: CurveModel.list.keys.first,
+      selectedCurve: CurveModel.list.values.first.first,
+      enableAxisLines: true,
+      enableCurveOutline: true,
+      enableValueVerticalLine: true,
+      animationTime: 2,
+    );
 
     playPauseController = AnimationController(
       vsync: this,
@@ -45,12 +48,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
     controller = AnimationController(
       vsync: this,
-      duration: Duration(seconds: animationTime),
+      duration: Duration(seconds: settings.animationTime),
     )..repeat(reverse: true);
 
     curveAnimation = CurvedAnimation(
       parent: controller,
-      curve: selectedCurve.curve,
+      curve: settings.selectedCurve.curve,
     );
   }
 
@@ -65,31 +68,33 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     if (category == null) return;
 
     setState(() {
-      selectedCategory = category;
-      selectedCurve = CurveModel.list[category]!.first;
-      curveAnimation.curve = selectedCurve.curve;
+      settings = settings.copyWith(
+        selectedCategory: category,
+        selectedCurve: CurveModel.list[category]!.first,
+      );
+      curveAnimation.curve = settings.selectedCurve.curve;
     });
   }
 
   void updateCurve(CurveModel? curve) {
-    if (curve == null || curve == selectedCurve) return;
+    if (curve == null || curve == settings.selectedCurve) return;
 
     setState(() {
-      selectedCurve = curve;
+      settings = settings.copyWith(selectedCurve: curve);
       curveAnimation.curve = curve.curve;
     });
   }
 
   void updateAnimationTime(double seconds) {
     // return if both values are same
-    if (animationTime == seconds.toInt()) return;
+    if (settings.animationTime == seconds.toInt()) return;
 
     setState(() {
-      animationTime = seconds.toInt();
+      settings = settings.copyWith(animationTime: seconds.toInt());
 
-      controller.duration = Duration(seconds: animationTime);
+      controller.duration = Duration(seconds: settings.animationTime);
 
-      curveAnimation.curve = selectedCurve.curve;
+      curveAnimation.curve = settings.selectedCurve.curve;
 
       if (controller.isForwardOrCompleted) {
         controller.repeat(reverse: true);
@@ -130,6 +135,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         GraphWidget(
           controller: controller,
           animation: curveAnimation,
+          settings: settings,
         ),
 
         // Box Animations
@@ -158,28 +164,25 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
 
     final controlsWidget = ConstrainedBox(
-      constraints: BoxConstraints(
-        maxWidth: 400,
-      ),
+      constraints: BoxConstraints(maxWidth: 400),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.end,
         spacing: spacing,
         children: [
-          // Code block
-          CodeBlock(code: selectedCurve.code),
+          CodeBlock(code: settings.selectedCurve.code),
 
           // Curve selector
           Row(
             spacing: 10,
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: .min,
+            mainAxisAlignment: .start,
             children: [
               // Curve category
               Flexible(
                 child: DropdownMenuWidget<String>(
                   title: "Category",
-                  value: selectedCategory,
+                  value: settings.selectedCategory,
                   items: CurveModel.list.keys.toList(),
                   onChanged: updateCategory,
                 ),
@@ -190,8 +193,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 flex: 2,
                 child: DropdownMenuWidget<CurveModel>(
                   title: "Curve",
-                  value: selectedCurve,
-                  items: CurveModel.list[selectedCategory]!.toList(),
+                  value: settings.selectedCurve,
+                  items: CurveModel.list[settings.selectedCategory]!.toList(),
                   onChanged: updateCurve,
                   builder: (context, value, textStyle) {
                     return Text(value.name.toString(), style: textStyle);
@@ -203,8 +206,20 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
           // Animation time
           TimeSlider(
-            animationTime: animationTime,
+            animationTime: settings.animationTime,
             onChanged: updateAnimationTime,
+          ),
+
+          // Disable/Enable Axis
+          CustomSwitch(
+            title: "Axis Lines",
+            subtitle: "Enable/Disable axis lines on the graph",
+            value: settings.enableAxisLines,
+            onChanged: (value) {
+              setState(() {
+                settings = settings.copyWith(enableAxisLines: value);
+              });
+            },
           ),
         ],
       ),
@@ -229,36 +244,30 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         child: SingleChildScrollView(
           child: switch (ScreenModeWidget.of(context)) {
             ScreenMode.mobile => Column(
-                spacing: spacing,
-                children: [
-                  animationWidget,
-                  controlsWidget,
-                  SizedBox(height: spacing),
-                ],
-              ),
+              spacing: spacing,
+              children: [
+                animationWidget,
+                controlsWidget,
+                SizedBox(height: spacing),
+              ],
+            ),
             ScreenMode.tablet => Column(
-                spacing: spacing,
-                children: [
-                  animationWidget,
-                  controlsWidget,
-                  SizedBox(height: spacing),
-                ],
-              ),
+              spacing: spacing,
+              children: [
+                animationWidget,
+                controlsWidget,
+                SizedBox(height: spacing),
+              ],
+            ),
             ScreenMode.web => Row(
-                spacing: spacing,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Expanded(
-                    flex: 2,
-                    child: animationWidget,
-                  ),
-                  Flexible(
-                    flex: 1,
-                    child: controlsWidget,
-                  ),
-                  SizedBox(width: spacing * 3),
-                ],
-              ),
+              spacing: spacing,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Expanded(flex: 2, child: animationWidget),
+                Flexible(flex: 1, child: controlsWidget),
+                SizedBox(width: spacing * 3),
+              ],
+            ),
           },
         ),
       ),

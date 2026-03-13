@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_curve_visualizer/views/widgets/graph/graph_config.dart';
+import 'package:flutter_curve_visualizer/views/widgets/graph/graph_settings.dart';
 import 'package:flutter_curve_visualizer/views/widgets/screen_mode.dart';
 import 'graph_painter.dart';
 
 class GraphWidget extends StatelessWidget {
-  final bool showCurveOutline;
   final CurvedAnimation animation;
   final AnimationController controller;
+  final GraphSettings settings;
 
   const GraphWidget({
     super.key,
-    this.showCurveOutline = true,
     required this.animation,
+    required this.settings,
     required this.controller,
   });
 
@@ -40,14 +41,16 @@ class GraphWidget extends StatelessWidget {
           painter: GraphPainter(
             controller: controller,
             animation: animation,
+            settings: settings,
             config: GraphConfiguration(
               xAxisLineCount: 10,
               yAxisLineCount: 6,
               axisWidth: 1,
-              curveLineWidth: 2.5,
+              curveLineWidth: 2,
+              curveLineBoldWidth: 2.5,
               pointerSize: 5,
               axisColor: theme.onSurface.withValues(alpha: 0.25),
-              showCurveOutline: showCurveOutline,
+              curveLineBoldColor: theme.onSurfaceVariant.withValues(),
               curveOutlineColor: theme.onSurfaceVariant.withValues(alpha: 0.25),
               curveLineColor: theme.primaryFixed,
               graphMarkerColor: theme.primaryFixed,
