@@ -8,14 +8,13 @@ class TimeSlider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final borderRadius = BorderRadius.circular(10);
-
     return ListTile(
       title: Text(
         "Time: ${animationTime}s",
         style: Theme.of(context).textTheme.titleSmall,
       ),
       subtitle: Slider(
+        padding: EdgeInsets.fromLTRB(4, 8, 4, 8),
         value: animationTime.toDouble(),
         min: 1.0,
         max: 10.0,

@@ -25,11 +25,44 @@ class GraphPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final points = generateCurveValues(animation, divisions);
 
+    _drawAxisTitle(canvas, size);
     _drawAxisLines(canvas, size);
     _drawCurveBg(canvas, points, size);
     _drawCurve(canvas, points, size);
     _drawAxisValueMarkers(canvas, size);
     _drawCurrentValueMarker(canvas, size, points);
+  }
+
+  void _drawAxisTitle(Canvas canvas, Size size) {
+    // --- Shared text style ---
+    final textStyle = TextStyle(
+      color: config.curveLineBoldColor,
+      fontSize: 16,
+      fontWeight: FontWeight.w500,
+    );
+
+    // --- X-Axis Title ---
+    final xTitlePainter = TextPainter(
+      text: TextSpan(text: "x", style: textStyle),
+      textDirection: TextDirection.ltr,
+    )..layout();
+
+    final xTitleOffset = Offset(
+      size.width + xTitlePainter.width,
+      size.height - (xTitlePainter.height / 2),
+    );
+
+    xTitlePainter.paint(canvas, xTitleOffset);
+
+    final yTitlePainter = TextPainter(
+      text: TextSpan(text: "y", style: textStyle),
+      textDirection: TextDirection.ltr,
+    )..layout();
+
+    canvas.save();
+    canvas.translate((-yTitlePainter.width / 2), (-xTitlePainter.height * 1.5));
+    yTitlePainter.paint(canvas, Offset.zero);
+    canvas.restore();
   }
 
   // Draws Vertical Line for the Current Value

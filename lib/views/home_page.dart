@@ -173,33 +173,27 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           CodeBlock(code: settings.selectedCurve.code),
 
           // Curve selector
-          Row(
-            spacing: 10,
-            mainAxisSize: .min,
-            mainAxisAlignment: .start,
+          Wrap(
+            spacing: spacing,
+            runSpacing: spacing,
             children: [
               // Curve category
-              Flexible(
-                child: DropdownMenuWidget<String>(
-                  title: "Category",
-                  value: settings.selectedCategory,
-                  items: CurveModel.list.keys.toList(),
-                  onChanged: updateCategory,
-                ),
+              DropdownMenuWidget<String>(
+                title: "Category",
+                value: settings.selectedCategory,
+                items: CurveModel.list.keys.toList(),
+                onChanged: updateCategory,
               ),
 
               // Curve type
-              Flexible(
-                flex: 2,
-                child: DropdownMenuWidget<CurveModel>(
-                  title: "Curve",
-                  value: settings.selectedCurve,
-                  items: CurveModel.list[settings.selectedCategory]!.toList(),
-                  onChanged: updateCurve,
-                  builder: (context, value, textStyle) {
-                    return Text(value.name.toString(), style: textStyle);
-                  },
-                ),
+              DropdownMenuWidget<CurveModel>(
+                title: "Curve",
+                value: settings.selectedCurve,
+                items: CurveModel.list[settings.selectedCategory]!.toList(),
+                onChanged: updateCurve,
+                builder: (context, value, textStyle) {
+                  return Text(value.name.toString(), style: textStyle);
+                },
               ),
             ],
           ),
@@ -227,6 +221,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
     return Scaffold(
       appBar: HomeAppBar(),
+      drawer: screenMode.isMobileOrTablet
+          ? Drawer(
+              width: MediaQuery.sizeOf(context).width * .50,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(8, 32, 8, 8),
+                child: Align(alignment: .topCenter, child: controlsWidget),
+              ),
+            )
+          : null,
       floatingActionButton: FloatingActionButton(
         onPressed: playPauseAnimation,
         child: Padding(
@@ -243,27 +246,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         width: double.infinity,
         child: SingleChildScrollView(
           child: switch (ScreenModeWidget.of(context)) {
-            ScreenMode.mobile => Column(
-              spacing: spacing,
-              children: [
-                animationWidget,
-                controlsWidget,
-                SizedBox(height: spacing),
-              ],
-            ),
-            ScreenMode.tablet => Column(
-              spacing: spacing,
-              children: [
-                animationWidget,
-                controlsWidget,
-                SizedBox(height: spacing),
-              ],
-            ),
+            ScreenMode.mobile => animationWidget,
+            ScreenMode.tablet => animationWidget,
             ScreenMode.web => Row(
               spacing: spacing,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Expanded(flex: 2, child: animationWidget),
+                Flexible(flex: 2, child: animationWidget),
                 Flexible(flex: 1, child: controlsWidget),
                 SizedBox(width: spacing * 3),
               ],
